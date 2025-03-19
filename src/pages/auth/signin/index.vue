@@ -24,7 +24,7 @@ const onSubmit = async () => {
   try {
     const response = await signinApiRequest(form.data.value)
     if (response.status === 200) {
-      router.push('/')
+      router.push('/home')
     }
   } catch (error) {
     const errorResponse = handleError(error)
@@ -83,28 +83,6 @@ const onSubmit = async () => {
           <div class="flex justify-between">
             <base-checkbox v-model="form.data.value.remember_me" text="Remember Me" />
             <router-link to="/forgot-password">Forgot Password</router-link>
-          </div>
-          <div>
-            <base-button type="submit" is-block color="primary"> Sign In </base-button>
-            <base-divider orientation="vertical" text="or continue with" />
-            <div class="flex justify-between gap-2">
-              <base-button type="button" variant="outline" class="shadow w-full">
-                <img
-                  src="@/assets/images/continue-with/google.svg"
-                  alt="Continue with Google"
-                  class="h-6"
-                />
-                Sign in with Google
-              </base-button>
-              <base-button type="button" variant="outline" class="shadow w-full">
-                <img
-                  src="@/assets/images/continue-with/github.svg"
-                  alt="Continue with Github"
-                  class="h-6"
-                />
-                Sign in with Github
-              </base-button>
-            </div>
           </div>
         </div>
       </div>
