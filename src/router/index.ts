@@ -1,57 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import authRoutes from '@/pages/auth/routes'
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    authRoutes,
     {
-      path: '/',
-      component: () => import('../layouts/app.vue'),
-      children: [
-        {
-          path: '',
-          redirect: '/app1a/home'
-        }
-      ]
+      path: '/unauthorized',
+      name: 'unauthorized',
+      component: () => import('@/pages/403.vue')
     },
     {
-      path: '/app1a',
-      component: () => import('../layouts/app.vue'),
-      children: [
-        {
-          path: '',
-          redirect: '/app1a/home'
-        },
-        {
-          path: 'home',
-          component: () => import('@/pages/home.vue')
-        },
-        {
-          path: 'api',
-          component: () => import('@/pages/api.vue')
-        },
-        {
-          path: 'nested/page-1',
-          component: () => import('@/pages/nested/page-1.vue')
-        },
-        {
-          path: 'nested/page-2',
-          component: () => import('@/pages/nested/page-2.vue')
-        }
-      ]
-    },
-    {
-      path: '/app1b',
-      component: () => import('../layouts/app.vue'),
-      children: [
-        {
-          path: '',
-          redirect: '/app1b/home'
-        },
-        {
-          path: 'home',
-          component: () => import('@/pages/home.vue')
-        }
-      ]
+      path: '/:catchAll(.*)', // This handles all unknown routes
+      name: 'not-found',
+      component: () => import('@/pages/404.vue')
     }
   ]
 })
