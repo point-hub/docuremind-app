@@ -24,8 +24,6 @@ const form = ref({
             <tr>
               <th class="whitespace-nowrap">Vault Code</th>
               <th class="whitespace-nowrap">Vault Name</th>
-              <th class="whitespace-nowrap">Rack Code</th>
-              <th class="whitespace-nowrap">Rack Name</th>
               <th class="whitespace-nowrap">Actions</th>
             </tr>
           </thead>
@@ -33,8 +31,6 @@ const form = ref({
             <tr>
               <td>A01</td>
               <td>Brankas 01</td>
-              <td>B01R01</td>
-              <td>Rack 01</td>
               <td>
                 <base-button color="primary" size="xs">Edit</base-button>
               </td>
@@ -42,8 +38,6 @@ const form = ref({
             <tr>
               <td>A02</td>
               <td>Brankas 02</td>
-              <td>B01R01</td>
-              <td>Rack 02</td>
               <td>
                 <base-button color="primary" size="xs">Edit</base-button>
               </td>
@@ -51,8 +45,6 @@ const form = ref({
             <tr>
               <td>A03</td>
               <td>Brankas 03</td>
-              <td>B01R03</td>
-              <td>Rack 03</td>
               <td>
                 <base-button color="primary" size="xs">Edit</base-button>
               </td>

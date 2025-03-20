@@ -24,6 +24,9 @@ const instance = axios.create({
   timeout: api.timeout
 })
 
+instance.defaults.headers.common['Cache-Control'] = `no-cache`
+instance.defaults.withCredentials = true
+
 instance.interceptors.request.use(
   (config) => {
     if (import.meta.env.DEV) {

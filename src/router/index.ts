@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import axios from '@/axios'
 import authRoutes from '@/pages/auth/routes'
+import { useAuthStore } from '@/stores/auth.store'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -10,11 +12,33 @@ const router = createRouter({
       component: () => import('../layouts/app.vue'),
       children: [
         { path: '', redirect: '/home' },
-        { path: 'home', component: () => import('@/pages/home.vue') },
-        { path: 'users', component: () => import('@/pages/home.vue') },
-        { path: 'owners', component: () => import('@/pages/home.vue') },
-        { path: 'vaults', component: () => import('@/pages/home.vue') },
-        { path: 'documents', component: () => import('@/pages/home.vue') }
+        { path: 'home', component: () => import('@/pages/home.vue'), meta: { requiresAuth: true } },
+        {
+          path: 'users',
+          component: () => import('@/pages/home.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
+          path: 'owners',
+          children: [
+            { path: '', component: () => import('@/pages/owners/list/index.vue') },
+            { path: '/:id', component: () => import('@/pages/owners/list/index.vue') }
+          ],
+          meta: { requiresAuth: true }
+        },
+        {
+          path: 'vaults',
+          children: [
+            { path: '', component: () => import('@/pages/vaults/list/index.vue') },
+            { path: '/:id', component: () => import('@/pages/vaults/list/index.vue') }
+          ],
+          meta: { requiresAuth: true }
+        },
+        {
+          path: 'documents',
+          component: () => import('@/pages/home.vue'),
+          meta: { requiresAuth: true }
+        }
       ]
     },
     authRoutes,
@@ -25,6 +49,33 @@ const router = createRouter({
       component: () => import('@/pages/404.vue')
     }
   ]
+})
+
+const isAuthenticated = async () => {
+  try {
+    const authStore = useAuthStore()
+    const response = await axios.post('/v1/auth/verify-token')
+    if (response.status === 200) {
+      authStore.update({
+        _id: response.data._id,
+        name: response.data.name
+      })
+      return true
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+    return false
+  }
+}
+
+router.beforeEach(async (to, from, next) => {
+  // 1. check if client is authenticated
+  if (to.meta.requiresAuth && !(await isAuthenticated())) {
+    // err 1. redirect to signin page if not authenticated
+    next(`/signin?${new URLSearchParams(to.query as Record<string, string>).toString()}`)
+  } else {
+    next()
+  }
 })
 
 export default router
