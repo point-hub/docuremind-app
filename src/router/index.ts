@@ -21,16 +21,16 @@ const router = createRouter({
         {
           path: 'owners',
           children: [
-            { path: '', component: () => import('@/pages/owners/list/index.vue') },
-            { path: '/:id', component: () => import('@/pages/owners/list/index.vue') }
+            { path: '', component: () => import('@/pages/home.vue') },
+            { path: '/:id', component: () => import('@/pages/home.vue') }
           ],
           meta: { requiresAuth: true }
         },
         {
           path: 'vaults',
           children: [
-            { path: '', component: () => import('@/pages/vaults/list/index.vue') },
-            { path: '/:id', component: () => import('@/pages/vaults/list/index.vue') }
+            { path: '', component: () => import('@/pages/home.vue') },
+            { path: '/:id', component: () => import('@/pages/home.vue') }
           ],
           meta: { requiresAuth: true }
         },
