@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import axios from '@/axios'
 import authRoutes from '@/pages/auth/routes'
 import ownerRoutes from '@/pages/owners/routes'
+import vaultRoutes from '@/pages/vaults/routes'
 import { useAuthStore } from '@/stores/auth.store'
 
 const router = createRouter({
@@ -20,18 +21,11 @@ const router = createRouter({
           meta: { requiresAuth: true }
         },
         {
-          path: 'vaults',
-          children: [
-            { path: '', component: () => import('@/pages/home.vue') },
-            { path: '/:id', component: () => import('@/pages/home.vue') }
-          ],
-          meta: { requiresAuth: true }
-        },
-        {
           path: 'documents',
           component: () => import('@/pages/home.vue'),
           meta: { requiresAuth: true }
         },
+        vaultRoutes,
         ownerRoutes
       ]
     },

@@ -3,7 +3,7 @@ html.dark {
 }
 
 body {
-  @apply font-open-sans text-slate-700 antialiased bg-slate-50;
+  @apply font-open-sans text-slate-700 antialiased bg-slate-50 text-sm;
   @apply dark:bg-slate-900 dark:text-slate-300;
 }
 
