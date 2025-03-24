@@ -16,7 +16,7 @@ const onSubmit = async () => {
   try {
     const response = await requestPasswordApiRequest(form.data.value.email)
     if (response.status === 200) {
-      // router.push('/')
+      router.push('/')
     }
   } catch (error) {
     const errorResponse = handleError(error)

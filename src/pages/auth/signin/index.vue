@@ -63,7 +63,7 @@ const onSubmit = async () => {
             autofocus
             v-model="form.data.value.username"
             :errors="form.errors.value.username"
-            label="Email"
+            label="Username"
             layout="vertical"
           />
           <base-input

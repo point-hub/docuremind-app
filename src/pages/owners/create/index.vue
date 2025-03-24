@@ -25,7 +25,7 @@ onMounted(async () => {
 
 const onSave = async () => {
   try {
-    const response = await createOwnersApi.send(form.data, form.errors)
+    const response = await createOwnersApi.send(form.data)
     if (response?.inserted_id) router.push('/owners')
   } catch (error) {
     const errorResponse = handleError(error)

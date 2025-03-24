@@ -52,7 +52,7 @@ const onSignout = () => {
           </button>
           <template #content>
             <div class="popper-root p-2">
-              <base-button
+              <!-- <base-button
                 variant="text"
                 color="primary"
                 size="sm"
@@ -60,7 +60,7 @@ const onSignout = () => {
               >
                 <base-avatar
                   size="xs"
-                  src="https://via.placeholder.com/150"
+                  src="https://placehold.co/150"
                   shape="squircle"
                   name="John Doe"
                 />
@@ -69,7 +69,7 @@ const onSignout = () => {
                   <p class="line-clamp-2">Username</p>
                 </div>
               </base-button>
-              <base-divider orientation="vertical" />
+              <base-divider orientation="vertical" /> -->
 
               <base-button
                 variant="text"
