@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import axios from '@/axios'
 import authRoutes from '@/pages/auth/routes'
+import ownerRoutes from '@/pages/owners/routes'
 import { useAuthStore } from '@/stores/auth.store'
 
 const router = createRouter({
@@ -19,14 +20,6 @@ const router = createRouter({
           meta: { requiresAuth: true }
         },
         {
-          path: 'owners',
-          children: [
-            { path: '', component: () => import('@/pages/home.vue') },
-            { path: '/:id', component: () => import('@/pages/home.vue') }
-          ],
-          meta: { requiresAuth: true }
-        },
-        {
           path: 'vaults',
           children: [
             { path: '', component: () => import('@/pages/home.vue') },
@@ -38,7 +31,8 @@ const router = createRouter({
           path: 'documents',
           component: () => import('@/pages/home.vue'),
           meta: { requiresAuth: true }
-        }
+        },
+        ownerRoutes
       ]
     },
     authRoutes,
@@ -58,7 +52,8 @@ const isAuthenticated = async () => {
     if (response.status === 200) {
       authStore.update({
         _id: response.data._id,
-        name: response.data.name
+        name: response.data.username,
+        role: response.data.role
       })
       return true
     }

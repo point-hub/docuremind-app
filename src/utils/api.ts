@@ -46,7 +46,7 @@ instance.interceptors.request.use(
 export const handleError: IHandleError = (error: unknown) => {
   console.log(error)
   if (!(error instanceof AxiosError)) {
-    console.log('err1')
+    console.log('error 1001')
     return {
       message: UNHANDLED_ERROR_MESSAGE,
       lists: UNHANDLED_ERROR_LISTS
@@ -54,7 +54,7 @@ export const handleError: IHandleError = (error: unknown) => {
   }
 
   if (!error.response) {
-    console.log('err2')
+    console.log('error 1002')
     return {
       message: UNHANDLED_ERROR_MESSAGE,
       lists: UNHANDLED_ERROR_LISTS
@@ -62,14 +62,14 @@ export const handleError: IHandleError = (error: unknown) => {
   }
 
   if (error.response?.status === 500 || error.response?.status === 404) {
-    console.log('err3')
+    console.log('error 1003')
     return {
       message: UNHANDLED_ERROR_MESSAGE,
       lists: UNHANDLED_ERROR_LISTS
     }
   }
-  console.log('err4')
-  const message = error?.response?.data?.message
+  console.log('error 1004')
+  const message = ''
   const errors = error?.response?.data?.errors
 
   return { message, errors }
