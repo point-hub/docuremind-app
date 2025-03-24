@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-  AppFooter,
   AppPreloader,
   AppSidebar,
   useMobileBreakpoint,
@@ -10,6 +9,7 @@ import {
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
+import AppFooter from '@/components/app-footer.vue'
 import AppHeader from '@/components/app-header.vue'
 import { apps } from '@/composable/apps'
 
@@ -69,7 +69,7 @@ onMounted(() => {
       </main>
 
       <!-- Footer -->
-      <component :is="AppFooter" :version="version" />
+      <app-footer :version="version"></app-footer>
     </div>
   </div>
 </template>
