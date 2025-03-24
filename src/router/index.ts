@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import axios from '@/axios'
 import authRoutes from '@/pages/auth/routes'
 import ownerRoutes from '@/pages/owners/routes'
+import userRoutes from '@/pages/users/routes'
 import vaultRoutes from '@/pages/vaults/routes'
 import { useAuthStore } from '@/stores/auth.store'
 
@@ -16,16 +17,12 @@ const router = createRouter({
         { path: '', redirect: '/home' },
         { path: 'home', component: () => import('@/pages/home.vue'), meta: { requiresAuth: true } },
         {
-          path: 'users',
-          component: () => import('@/pages/home.vue'),
-          meta: { requiresAuth: true }
-        },
-        {
           path: 'documents',
           component: () => import('@/pages/home.vue'),
           meta: { requiresAuth: true }
         },
         vaultRoutes,
+        userRoutes,
         ownerRoutes
       ]
     },

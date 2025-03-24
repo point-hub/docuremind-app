@@ -4,28 +4,23 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import DeleteModal from '../components/delete/delete-modal.vue'
-import { useGetVaultsApi } from './retrieve-all.api'
+import { useGetUsersApi } from './retrieve-all.api'
 
 const route = useRoute()
 const router = useRouter()
 const deleteModalRef = ref()
-const getVaultsApi = useGetVaultsApi()
+const getUsersApi = useGetUsersApi()
 
-interface IVault {
+interface IUser {
   _id: string
-  code: string
   name: string
-  racks: {
-    code: string
-    name: string
-  }[]
 }
 
 const searchAll = ref('')
 const search = ref({
   name: ''
 })
-const vaults = ref<IVault[]>()
+const users = ref<IUser[]>()
 const pagination = ref({
   page: 1,
   page_size: 10,
@@ -36,7 +31,7 @@ const rowMenuRef = ref()
 
 const updateRouter = () => {
   router.push({
-    path: '/vaults',
+    path: '/users',
     query: {
       search: searchAll.value,
       page: pagination.value.page,
@@ -53,11 +48,11 @@ watchDebounced(
     // reset page 1
     pagination.value.page = 1
     // call api
-    const response = await getVaultsApi.send(
+    const response = await getUsersApi.send(
       { all: searchAll.value, ...search.value },
       pagination.value.page
     )
-    vaults.value = response?.data
+    users.value = response?.data
     pagination.value = response?.pagination
     // update url query params
     updateRouter()
@@ -75,11 +70,11 @@ watchDebounced(
     // reset page 1
     pagination.value.page = 1
     // call api
-    const response = await getVaultsApi.send(
+    const response = await getUsersApi.send(
       { all: searchAll.value, ...search.value },
       pagination.value.page
     )
-    vaults.value = response?.data
+    users.value = response?.data
     pagination.value = response?.pagination
     // update url query params
     updateRouter()
@@ -92,11 +87,11 @@ watchDebounced(
 // Section Pagination
 const onPageUpdate = async () => {
   // call api
-  const response = await getVaultsApi.send(
+  const response = await getUsersApi.send(
     { all: searchAll.value, ...search.value },
     pagination.value.page
   )
-  vaults.value = response?.data
+  users.value = response?.data
   pagination.value = response?.pagination
   // update url query params
   updateRouter()
@@ -108,39 +103,39 @@ onMounted(async () => {
   search.value.name = route.query['search.name']?.toString() ?? ''
   pagination.value.page = Number(route.query.page ?? 1)
   // call api
-  const response = await getVaultsApi.send(
+  const response = await getUsersApi.send(
     { all: searchAll.value, ...search.value },
     pagination.value.page
   )
-  vaults.value = response?.data
+  users.value = response?.data
   pagination.value = response?.pagination
 })
 
-const onDeleteModal = (vault: IVault, index: number) => {
+const onDeleteModal = (user: IUser, index: number) => {
   rowMenuRef.value[index].toggle(false)
   deleteModalRef.value.toggleModal(true, {
-    id: vault._id,
-    name: `${vault.name}`
+    id: user._id,
+    name: `${user.name}`
   })
 }
 
 const onDelete = async () => {
   // call api
-  const response = await getVaultsApi.send(
+  const response = await getUsersApi.send(
     { all: searchAll.value, ...search.value },
     pagination.value.page
   )
-  vaults.value = response?.data
+  users.value = response?.data
   pagination.value = response?.pagination
 }
 </script>
 
 <template>
   <base-card>
-    <template #header>Vaults</template>
+    <template #header>Users</template>
 
     <div class="my-5 flex gap-2">
-      <router-link to="/vaults/create">
+      <router-link to="/users/create">
         <base-button color="info" shape="sharp">Create</base-button>
       </router-link>
       <base-input v-model="searchAll" placeholder="Search..." border="full" class="w-full" />
@@ -150,7 +145,6 @@ const onDelete = async () => {
         <thead>
           <tr>
             <th class="w-1"></th>
-            <th>Code</th>
             <th>Name</th>
           </tr>
         </thead>
@@ -163,7 +157,7 @@ const onDelete = async () => {
             </td>
           </tr>
           <template v-if="!isLoading">
-            <tr v-for="(vault, index) in vaults" :key="index">
+            <tr v-for="(user, index) in users" :key="index">
               <td>
                 <base-popover placement="bottom" ref="rowMenuRef">
                   <base-button size="xs" @click="rowMenuRef[index].toggle()">
@@ -172,7 +166,7 @@ const onDelete = async () => {
                   <template #content>
                     <base-card class="py-1! px-2! text-sm">
                       <div class="flex flex-col">
-                        <router-link :to="`/vaults/${vault._id}`">
+                        <router-link :to="`/users/${user._id}`">
                           <base-button variant="text" color="info">
                             <div class="flex gap-2 w-full">
                               <base-icon class="text-xl" icon="i-ph-eye"></base-icon>
@@ -184,7 +178,7 @@ const onDelete = async () => {
                         <base-button
                           variant="text"
                           color="danger"
-                          @click="onDeleteModal(vault, index)"
+                          @click="onDeleteModal(user, index)"
                         >
                           <div class="flex gap-2 w-full">
                             <base-icon class="text-xl" icon="i-ph-trash"></base-icon>
@@ -197,11 +191,10 @@ const onDelete = async () => {
                 </base-popover>
               </td>
               <td>
-                <router-link :to="`/vaults/${vault._id}`" class="text-blue">
-                  {{ vault.code }}
+                <router-link :to="`/users/${user._id}`" class="text-blue">
+                  {{ user.name }}
                 </router-link>
               </td>
-              <td>{{ vault.name }}</td>
             </tr>
           </template>
         </tbody>
@@ -218,8 +211,4 @@ const onDelete = async () => {
   </base-card>
 </template>
 
-<style scoped lang="postcss">
-.table-container {
-  @apply py-1;
-}
-</style>
+<style scoped lang="postcss"></style>
