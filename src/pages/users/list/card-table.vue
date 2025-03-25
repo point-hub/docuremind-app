@@ -13,7 +13,10 @@ const getUsersApi = useGetUsersApi()
 
 interface IUser {
   _id: string
+  username: string
   name: string
+  email: string
+  role: string
 }
 
 const searchAll = ref('')
@@ -145,7 +148,10 @@ const onDelete = async () => {
         <thead>
           <tr>
             <th class="w-1"></th>
+            <th>Username</th>
+            <th>Email</th>
             <th>Name</th>
+            <th>Role</th>
           </tr>
         </thead>
         <tbody>
@@ -192,9 +198,12 @@ const onDelete = async () => {
               </td>
               <td>
                 <router-link :to="`/users/${user._id}`" class="text-blue">
-                  {{ user.name }}
+                  {{ user.email }}
                 </router-link>
               </td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.role }}</td>
             </tr>
           </template>
         </tbody>

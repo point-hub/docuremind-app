@@ -28,3 +28,7 @@ h3 {
 .scrollbar-hidden::-webkit-scrollbar {
   @apply hidden;
 }
+
+.table-container {
+  @apply py-1;
+}

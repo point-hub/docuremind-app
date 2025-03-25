@@ -34,6 +34,7 @@ const onDeleted = async () => {
       </router-link>
 
       <base-button
+        v-if="authStore.role !== 'admin'"
         color="danger"
         size="sm"
         @click="

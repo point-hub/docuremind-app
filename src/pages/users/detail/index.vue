@@ -28,7 +28,10 @@ onMounted(async () => {
 
   if (response) {
     formId.value = response._id
+    form.data.username = response.username
+    form.data.email = response.email
     form.data.name = response.name
+    form.data.role = response.role
   }
 })
 </script>
@@ -38,6 +41,12 @@ onMounted(async () => {
     <card-breadcrumbs />
 
     <card-action :data="form.data" />
-    <card-form :form-id="route.params.id.toString()" v-model:name="form.data.name" />
+    <card-form
+      :form-id="route.params.id.toString()"
+      v-model:username="form.data.username"
+      v-model:email="form.data.email"
+      v-model:name="form.data.name"
+      v-model:role="form.data.role"
+    />
   </div>
 </template>

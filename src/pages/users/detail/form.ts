@@ -8,7 +8,10 @@ export interface IForm {
 
 export function useForm() {
   const defaultForm: IForm = {
-    name: ''
+    username: '',
+    email: '',
+    name: '',
+    role: ''
   }
 
   const data = ref<IForm>(defaultForm)

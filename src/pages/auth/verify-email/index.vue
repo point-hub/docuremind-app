@@ -29,6 +29,7 @@ const onSubmit = async () => {
     }
   } catch (error) {
     const errorResponse = handleError(error)
+    console.log(error)
     if (errorResponse.errors) {
       form.errors.value.code = errorResponse.errors.code || []
     }

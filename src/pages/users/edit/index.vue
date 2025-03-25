@@ -31,7 +31,10 @@ onMounted(async () => {
 
   if (response) {
     formId.value = response._id
+    form.data.username = response.username
+    form.data.email = response.email
     form.data.name = response.name
+    form.data.role = response.role
   }
 })
 
@@ -64,7 +67,10 @@ const onUpdate = async () => {
 
     <card-form
       :form-id="route.params.id.toString()"
+      v-model:username="form.data.username"
+      v-model:email="form.data.email"
       v-model:name="form.data.name"
+      v-model:role="form.data.role"
       :errors="form.errors"
     />
 

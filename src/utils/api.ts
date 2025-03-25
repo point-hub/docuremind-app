@@ -69,7 +69,7 @@ export const handleError: IHandleError = (error: unknown) => {
     }
   }
   console.log('error 1004')
-  const message = ''
+  const message = error?.response?.data?.message
   const errors = error?.response?.data?.errors
 
   return { message, errors }

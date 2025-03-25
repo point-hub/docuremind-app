@@ -39,8 +39,6 @@ watch(
   <base-card>
     <template #header>Users</template>
 
-    {{ errors }}
-
     <div class="flex flex-col gap-4 mt-5">
       <base-input required v-model="username" label="Username" :errors="errors?.username" />
       <base-input required v-model="email" label="Email" :errors="errors?.email" />

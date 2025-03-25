@@ -6,12 +6,12 @@ import {
   useSidebar,
   useSidebarStore
 } from '@point-hub/papp'
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import AppFooter from '@/components/app-footer.vue'
 import AppHeader from '@/components/app-header.vue'
-import { apps } from '@/composable/apps'
+import { useAppMenu } from '@/composable/app-menu'
 
 import { version } from '../../package.json'
 
@@ -19,13 +19,14 @@ const route = useRoute()
 
 useSidebar()
 
+const appMenu = reactive(useAppMenu())
 const mobileBreakpoint = useMobileBreakpoint()
 const sidebarStore = useSidebarStore()
 
 const choosenAppIndex = ref(0)
-const choosenTitle = ref(apps[choosenAppIndex.value].name)
+const choosenTitle = ref('')
 const onChooseApp = (path: string) => {
-  for (const [index, app] of apps.entries()) {
+  for (const [index, app] of appMenu.menus.entries()) {
     if (app.path === path) {
       choosenTitle.value = app.name
       choosenAppIndex.value = index
@@ -34,7 +35,7 @@ const onChooseApp = (path: string) => {
 }
 
 onMounted(() => {
-  for (const [index, app] of apps.entries()) {
+  for (const [index, app] of appMenu.menus.entries()) {
     if (route.path.includes(app.path)) {
       choosenTitle.value = app.name
       choosenAppIndex.value = index
@@ -54,8 +55,8 @@ onMounted(() => {
     <component
       :is="AppSidebar"
       :title="choosenTitle"
-      :apps="apps"
-      :menus="apps[choosenAppIndex].menu ?? []"
+      :apps="appMenu.menus"
+      :menus="appMenu.menus[choosenAppIndex].menu ?? []"
       :is-sidebar-open="sidebarStore.isSidebarOpen"
       :is-mobile="mobileBreakpoint.isMobile()"
       @choose="onChooseApp"
