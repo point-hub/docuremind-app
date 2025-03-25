@@ -4,14 +4,14 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import DeleteModal from '../components/delete/delete-modal.vue'
-import { useGetOwnersApi } from './get.api'
+import { useGetDocumentsApi } from './get.api'
 
 const route = useRoute()
 const router = useRouter()
 const deleteModalRef = ref()
-const getOwnersApi = useGetOwnersApi()
+const getDocumentsApi = useGetDocumentsApi()
 
-interface IOwner {
+interface IDocument {
   _id: string
   name: string
 }
@@ -20,7 +20,7 @@ const searchAll = ref('')
 const search = ref({
   name: ''
 })
-const owners = ref<IOwner[]>()
+const documents = ref<IDocument[]>()
 const pagination = ref({
   page: 1,
   page_size: 10,
@@ -31,7 +31,7 @@ const rowMenuRef = ref()
 
 const updateRouter = () => {
   router.push({
-    path: '/owners',
+    path: '/documents',
     query: {
       search: searchAll.value,
       page: pagination.value.page,
@@ -48,11 +48,11 @@ watchDebounced(
     // reset page 1
     pagination.value.page = 1
     // call api
-    const response = await getOwnersApi.send(
+    const response = await getDocumentsApi.send(
       { all: searchAll.value, ...search.value },
       pagination.value.page
     )
-    owners.value = response?.data
+    documents.value = response?.data
     pagination.value = response?.pagination
     // update url query params
     updateRouter()
@@ -70,11 +70,11 @@ watchDebounced(
     // reset page 1
     pagination.value.page = 1
     // call api
-    const response = await getOwnersApi.send(
+    const response = await getDocumentsApi.send(
       { all: searchAll.value, ...search.value },
       pagination.value.page
     )
-    owners.value = response?.data
+    documents.value = response?.data
     pagination.value = response?.pagination
     // update url query params
     updateRouter()
@@ -87,11 +87,11 @@ watchDebounced(
 // Section Pagination
 const onPageUpdate = async () => {
   // call api
-  const response = await getOwnersApi.send(
+  const response = await getDocumentsApi.send(
     { all: searchAll.value, ...search.value },
     pagination.value.page
   )
-  owners.value = response?.data
+  documents.value = response?.data
   pagination.value = response?.pagination
   // update url query params
   updateRouter()
@@ -103,41 +103,41 @@ onMounted(async () => {
   search.value.name = route.query['search.name']?.toString() ?? ''
   pagination.value.page = Number(route.query.page ?? 1)
   // call api
-  const response = await getOwnersApi.send(
+  const response = await getDocumentsApi.send(
     { all: searchAll.value, ...search.value },
     pagination.value.page
   )
-  owners.value = response?.data
+  documents.value = response?.data
   pagination.value = response?.pagination
 })
 
-const onDeleteModal = (owner: IOwner, index: number) => {
+const onDeleteModal = (document: IDocument, index: number) => {
   rowMenuRef.value[index].toggle(false)
   deleteModalRef.value.toggleModal(true, {
-    id: owner._id,
-    name: `${owner.name}`
+    id: document._id,
+    name: `${document.name}`
   })
 }
 
 const onDelete = async () => {
   // call api
-  const response = await getOwnersApi.send(
+  const response = await getDocumentsApi.send(
     { all: searchAll.value, ...search.value },
     pagination.value.page
   )
-  owners.value = response?.data
+  documents.value = response?.data
   pagination.value = response?.pagination
 }
 </script>
 
 <template>
   <base-card>
-    <template #header>Owners</template>
+    <template #header>Documents</template>
 
     <div class="my-5 flex gap-2">
-      <router-link to="/owners/create">
+      <!-- <router-link to="/documents/create">
         <base-button color="info" shape="sharp">Create</base-button>
-      </router-link>
+      </router-link> -->
       <base-input v-model="searchAll" placeholder="Search..." border="full" class="w-full" />
     </div>
     <div class="flex flex-col gap-4">
@@ -145,19 +145,24 @@ const onDelete = async () => {
         <thead>
           <tr>
             <th class="w-1"></th>
+            <th>Code</th>
             <th>Name</th>
+            <th>Owner</th>
+            <th>Vault</th>
+            <th>Rack</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="isLoading">
-            <td colspan="2">
+            <td colspan="7">
               <p class="w-full h-32 flex items-center justify-center gap-2 text-center text-xl">
                 <base-spinner color="primary" size="xs" /> <span>Loading</span>
               </p>
             </td>
           </tr>
           <template v-if="!isLoading">
-            <tr v-for="(owner, index) in owners" :key="index">
+            <tr v-for="(document, index) in documents" :key="index">
               <td>
                 <base-popover placement="bottom" ref="rowMenuRef">
                   <base-button size="xs" @click="rowMenuRef[index].toggle()">
@@ -166,7 +171,7 @@ const onDelete = async () => {
                   <template #content>
                     <base-card class="py-1! px-2! text-sm">
                       <div class="flex flex-col">
-                        <router-link :to="`/owners/${owner._id}`">
+                        <router-link :to="`/documents/${document._id}`">
                           <base-button variant="text" color="info">
                             <div class="flex gap-2 w-full">
                               <base-icon class="text-xl" icon="i-ph-eye"></base-icon>
@@ -178,7 +183,7 @@ const onDelete = async () => {
                         <base-button
                           variant="text"
                           color="danger"
-                          @click="onDeleteModal(owner, index)"
+                          @click="onDeleteModal(document, index)"
                         >
                           <div class="flex gap-2 w-full">
                             <base-icon class="text-xl" icon="i-ph-trash"></base-icon>
@@ -191,8 +196,8 @@ const onDelete = async () => {
                 </base-popover>
               </td>
               <td>
-                <router-link :to="`/owners/${owner._id}`" class="text-blue">
-                  {{ owner.name }}
+                <router-link :to="`/documents/${document._id}`" class="text-blue">
+                  {{ document.name }}
                 </router-link>
               </td>
             </tr>
