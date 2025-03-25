@@ -3,36 +3,26 @@ import { ref, watch } from 'vue'
 export interface IForm {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
-  code: string
-  name: string
-  address: string
-  phone: string
-  notes: string
 }
 
 export interface IFormError {
   [key: string]: string[]
-  code: string[]
-  name: string[]
-  address: string[]
-  phone: string[]
-  notes: string[]
 }
 
 export function useForm() {
   const defaultForm: IForm = {
     code: '',
     name: '',
-    address: '',
-    phone: '',
+    type: '',
+    owner: '',
     notes: ''
   }
 
   const defaultFormError: IFormError = {
     code: [],
     name: [],
-    address: [],
-    phone: [],
+    type: [],
+    owner: [],
     notes: []
   }
 

@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import DeleteModal from '../components/delete/delete-modal.vue'
-import { useGetDocumentsApi } from './get.api'
+import { useGetDocumentsApi } from './retrieve-all.api'
 
 const route = useRoute()
 const router = useRouter()
@@ -13,6 +13,7 @@ const getDocumentsApi = useGetDocumentsApi()
 
 interface IDocument {
   _id: string
+  code: string
   name: string
 }
 
@@ -135,9 +136,9 @@ const onDelete = async () => {
     <template #header>Documents</template>
 
     <div class="my-5 flex gap-2">
-      <!-- <router-link to="/documents/create">
+      <router-link to="/documents/create">
         <base-button color="info" shape="sharp">Create</base-button>
-      </router-link> -->
+      </router-link>
       <base-input v-model="searchAll" placeholder="Search..." border="full" class="w-full" />
     </div>
     <div class="flex flex-col gap-4">
@@ -194,6 +195,11 @@ const onDelete = async () => {
                     </base-card>
                   </template>
                 </base-popover>
+              </td>
+              <td>
+                <router-link :to="`/documents/${document._id}`" class="text-blue">
+                  {{ document.code }}
+                </router-link>
               </td>
               <td>
                 <router-link :to="`/documents/${document._id}`" class="text-blue">
