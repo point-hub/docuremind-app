@@ -9,8 +9,8 @@ import { handleError } from '@/utils/api'
 import CardBreadcrumbs from './card-breadcrumbs.vue'
 import CardForm from './card-form.vue'
 import { useForm } from './form'
-import { useGetOwnerApi } from './get-owner.api'
-import { useUpdateOwnerApi } from './update-owner.api'
+import { useGetOwnerApi } from './retrieve.api'
+import { useUpdateOwnerApi } from './update.api'
 
 const route = useRoute()
 const router = useRouter()

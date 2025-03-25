@@ -3,7 +3,7 @@ import { inject, type Ref, ref } from 'vue'
 
 import type { IToastRef } from '@/main-app.vue'
 
-import { useDeleteOwnerApi } from './delete-owner.api'
+import { useDeleteOwnerApi } from './delete.api'
 import type { IFormError } from './form'
 
 const toastRef = inject<Ref<IToastRef>>('toastRef')
