@@ -1,7 +1,10 @@
 import { ref } from 'vue'
 
 export interface IForm {
+  username: string
+  email: string
   name: string
+  role: string
 }
 
 export interface IFormError {
@@ -11,7 +14,10 @@ export interface IFormError {
 
 export function useForm() {
   const defaultForm: IForm = {
-    name: ''
+    username: '',
+    email: '',
+    name: '',
+    role: ''
   }
 
   const defaultFormError: IFormError = {

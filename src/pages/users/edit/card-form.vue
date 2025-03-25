@@ -36,8 +36,8 @@ watch(
 
 watch(
   () => roleSelected.value,
-  (option: IOption) => {
-    role.value = option?._id ?? ''
+  () => {
+    role.value = roleSelected.value?._id ?? ''
   },
   { immediate: true, deep: true }
 )
