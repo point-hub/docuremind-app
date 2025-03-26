@@ -29,9 +29,9 @@ const onDeleted = async () => {
         <base-button color="info" size="sm">Create</base-button>
       </router-link>
 
-      <!-- <router-link :to="`/documents/${route.params.id}/edit`">
+      <router-link :to="`/documents/${route.params.id}/edit`">
         <base-button color="info" size="sm">Edit</base-button>
-      </router-link> -->
+      </router-link>
 
       <base-button
         color="danger"

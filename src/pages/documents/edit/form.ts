@@ -1,7 +1,8 @@
 import { ref } from 'vue'
 
 export interface IForm {
-  name: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
 }
 
 export interface IFormError {

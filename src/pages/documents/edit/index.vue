@@ -31,7 +31,7 @@ onMounted(async () => {
 
   if (response) {
     formId.value = response._id
-    form.data.name = response.name
+    form.data = response
   }
 })
 
@@ -66,9 +66,19 @@ const onUpdate = async () => {
   <div class="flex flex-col gap-4">
     <card-breadcrumbs />
 
+    {{ form.data }}
+
     <card-form
       :form-id="route.params.id.toString()"
+      v-model:code="form.data.code"
       v-model:name="form.data.name"
+      v-model:type="form.data.type"
+      v-model:owner="form.data.owner"
+      v-model:vault="form.data.vault"
+      v-model:rack="form.data.rack"
+      v-model:issued_date="form.data.issued_date"
+      v-model:expired_date="form.data.expired_date"
+      v-model:notes="form.data.notes"
       :errors="form.errors"
     />
 
