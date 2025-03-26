@@ -216,7 +216,9 @@ const onDelete = async () => {
               <td>{{ document.owner.label }}</td>
               <td>{{ document.vault.label }}</td>
               <td>{{ document.rack }}</td>
-              <td>{{ document.status }}</td>
+              <td>
+                <base-badge variant="light">{{ document.status }}</base-badge>
+              </td>
             </tr>
           </template>
         </tbody>
