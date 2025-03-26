@@ -28,7 +28,7 @@ onMounted(async () => {
 
   if (response) {
     formId.value = response._id
-    form.data.name = response.name
+    form.data = response
   }
 })
 </script>
@@ -38,6 +38,18 @@ onMounted(async () => {
     <card-breadcrumbs />
 
     <card-action :data="form.data" />
-    <card-form :form-id="route.params.id.toString()" v-model:name="form.data.name" />
+    <card-form
+      :form-id="route.params.id.toString()"
+      :code="form.data.code"
+      :name="form.data.name"
+      :type="form.data.type"
+      :owner="form.data.owner?.label"
+      :vault="form.data.vault?.label"
+      :rack="form.data.rack"
+      :issued_date="form.data.issued_date"
+      :expired_date="form.data.expired_date"
+      :notes="form.data.notes"
+      :status="form.data.status"
+    />
   </div>
 </template>

@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import DeleteModal from '../components/delete/delete-modal.vue'
-import { useGetOwnersApi } from './get.api'
+import { useGetOwnersApi } from './retrieve-all.api'
 
 const route = useRoute()
 const router = useRouter()

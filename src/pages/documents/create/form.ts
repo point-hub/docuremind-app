@@ -14,7 +14,6 @@ export function useForm() {
     code: '',
     name: '',
     type: '',
-    owner: '',
     notes: ''
   }
 
@@ -22,7 +21,6 @@ export function useForm() {
     code: [],
     name: [],
     type: [],
-    owner: [],
     notes: []
   }
 

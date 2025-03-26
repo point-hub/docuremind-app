@@ -9,7 +9,7 @@ import CardBreadcrumbs from './card-breadcrumbs.vue'
 import CardForm from './card-form.vue'
 import CardRack from './card-rack.vue'
 import { useForm } from './form'
-import { useGetVaultApi } from './get.api'
+import { useGetVaultApi } from './retrieve.api'
 
 const route = useRoute()
 const router = useRouter()

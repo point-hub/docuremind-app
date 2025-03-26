@@ -15,6 +15,17 @@ interface IDocument {
   _id: string
   code: string
   name: string
+  type: string
+  owner: {
+    _id: string
+    label: string
+  }
+  vault: {
+    _id: string
+    label: string
+  }
+  rack: string
+  status: string
 }
 
 const searchAll = ref('')
@@ -201,11 +212,11 @@ const onDelete = async () => {
                   {{ document.code }}
                 </router-link>
               </td>
-              <td>
-                <router-link :to="`/documents/${document._id}`" class="text-blue">
-                  {{ document.name }}
-                </router-link>
-              </td>
+              <td>{{ document.name }}</td>
+              <td>{{ document.owner.label }}</td>
+              <td>{{ document.vault.label }}</td>
+              <td>{{ document.rack }}</td>
+              <td>{{ document.status }}</td>
             </tr>
           </template>
         </tbody>
