@@ -3,11 +3,14 @@ import { watchDebounced } from '@vueuse/core'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import { useAuthStore } from '@/stores/auth.store'
+
 import DeleteModal from '../components/delete/delete-modal.vue'
 import { useGetDocumentsApi } from './retrieve-all.api'
 
 const route = useRoute()
 const router = useRouter()
+const authStore = useAuthStore()
 const deleteModalRef = ref()
 const getDocumentsApi = useGetDocumentsApi()
 
@@ -147,7 +150,7 @@ const onDelete = async () => {
     <template #header>Documents</template>
 
     <div class="my-5 flex gap-2">
-      <router-link to="/documents/create">
+      <router-link to="/documents/create" v-if="authStore.role === 'admin'">
         <base-button color="info" shape="sharp">Create</base-button>
       </router-link>
       <base-input v-model="searchAll" placeholder="Search..." border="full" class="w-full" />
@@ -193,6 +196,7 @@ const onDelete = async () => {
                         </router-link>
                         <base-divider orientation="vertical" class="my-1!"></base-divider>
                         <base-button
+                          v-if="authStore.role === 'admin'"
                           variant="text"
                           color="danger"
                           @click="onDeleteModal(document, index)"

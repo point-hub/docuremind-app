@@ -37,7 +37,7 @@ onMounted(async () => {
   <div class="flex flex-col gap-4">
     <card-breadcrumbs />
 
-    <card-action :data="form.data" />
+    <card-action :data="form.data" v-if="authStore.role === 'admin'" />
     <card-form
       :form-id="route.params.id.toString()"
       :code="form.data.code"

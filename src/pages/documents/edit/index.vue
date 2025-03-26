@@ -66,8 +66,6 @@ const onUpdate = async () => {
   <div class="flex flex-col gap-4">
     <card-breadcrumbs />
 
-    {{ form.data }}
-
     <card-form
       :form-id="route.params.id.toString()"
       v-model:code="form.data.code"
