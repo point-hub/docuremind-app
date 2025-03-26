@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 import { useAuthStore } from '@/stores/auth.store'
 
@@ -11,7 +11,6 @@ import { useForm } from './form'
 import { useGetDocumentApi } from './retrieve.api'
 
 const route = useRoute()
-const router = useRouter()
 const authStore = useAuthStore()
 const getDocumentApi = useGetDocumentApi()
 
@@ -20,10 +19,6 @@ const form = reactive(useForm())
 const formId = ref()
 
 onMounted(async () => {
-  if (authStore.role !== 'admin') {
-    router.push('/unauthorized')
-  }
-
   const response = await getDocumentApi.send(route.params.id.toString())
 
   if (response) {
