@@ -7,6 +7,7 @@ export function useGetDocumentApi() {
 
       return {
         _id: response.data._id,
+        cover_url: response.data.cover_url,
         code: response.data.code,
         name: response.data.name,
         type: response.data.type,

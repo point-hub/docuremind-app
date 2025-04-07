@@ -5,6 +5,7 @@ import type { IFormError } from './form'
 import { useGetOwnersApi } from './retrieve-all-owner.api'
 import { useGetVaultsApi } from './retrieve-all-vault.api'
 
+const cover = defineModel('cover')
 const code = defineModel<string>('code')
 const name = defineModel<string>('name')
 const type = defineModel<string>('type')
@@ -94,6 +95,16 @@ watch(
   },
   { deep: true }
 )
+
+interface HTMLInputEvent extends Event {
+  target: HTMLInputElement
+}
+
+const onUpload = (e: HTMLInputEvent) => {
+  if (e.target.files && e.target.files[0]) {
+    cover.value = e.target.files[0]
+  }
+}
 </script>
 
 <template>
@@ -101,6 +112,7 @@ watch(
     <template #header>Documents</template>
 
     <div class="flex flex-col gap-4 mt-5">
+      <base-file-upload label="Cover" @change="onUpload" />
       <base-input required v-model="code" label="Code" :errors="errors?.code" />
       <base-input required v-model="name" label="Name" :errors="errors?.name" />
       <base-autocomplete

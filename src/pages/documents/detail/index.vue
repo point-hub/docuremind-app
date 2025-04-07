@@ -35,6 +35,7 @@ onMounted(async () => {
     <card-action :data="form.data" v-if="authStore.role === 'admin'" />
     <card-form
       :form-id="route.params.id.toString()"
+      :cover_url="form.data.cover_url"
       :code="form.data.code"
       :name="form.data.name"
       :type="form.data.type"

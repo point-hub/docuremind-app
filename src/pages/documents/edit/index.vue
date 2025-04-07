@@ -68,6 +68,8 @@ const onUpdate = async () => {
 
     <card-form
       :form-id="route.params.id.toString()"
+      v-model:cover="form.data.cover"
+      v-model:cover_url="form.data.cover_url"
       v-model:code="form.data.code"
       v-model:name="form.data.name"
       v-model:type="form.data.type"
