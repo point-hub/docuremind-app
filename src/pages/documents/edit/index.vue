@@ -65,11 +65,15 @@ const onUpdate = async () => {
 <template>
   <div class="flex flex-col gap-4">
     <card-breadcrumbs />
-
+    <pre><code>{{ form.data }}</code></pre>
+    <img :src="form.data.document_url" alt="" />
     <card-form
       :form-id="route.params.id.toString()"
       v-model:cover="form.data.cover"
       v-model:cover_url="form.data.cover_url"
+      v-model:document="form.data.document"
+      v-model:document_mime="form.data.document_mime"
+      v-model:document_url="form.data.document_url"
       v-model:code="form.data.code"
       v-model:name="form.data.name"
       v-model:type="form.data.type"

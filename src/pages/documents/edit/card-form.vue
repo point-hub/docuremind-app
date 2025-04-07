@@ -7,6 +7,9 @@ import { useGetVaultsApi } from './retrieve-all-vault.api'
 
 const cover = defineModel('cover')
 const cover_url = defineModel<string>('cover_url')
+const document = defineModel('document')
+const document_mime = defineModel<string>('document_mime')
+const document_url = defineModel<string>('document_url')
 const code = defineModel<string>('code')
 const name = defineModel<string>('name')
 const type = defineModel<string>('type')
@@ -120,6 +123,12 @@ const onUpload = (e: HTMLInputEvent) => {
     cover.value = e.target.files[0]
   }
 }
+
+const onUploadFile = (e: HTMLInputEvent) => {
+  if (e.target.files && e.target.files[0]) {
+    document.value = e.target.files[0]
+  }
+}
 </script>
 
 <template>
@@ -129,8 +138,8 @@ const onUpload = (e: HTMLInputEvent) => {
     <div class="flex flex-col gap-4 mt-5">
       <base-form label="Cover">
         <div>
-          <img :src="cover_url" alt="" class="md:w-320px" />
-          <base-file-upload @change="onUpload" />
+          <img v-if="cover_url" :src="cover_url" alt="" class="md:w-320px" />
+          <base-file-upload @change="onUpload" accept="image/*" />
         </div>
       </base-form>
       <base-input required v-model="code" label="Code" :errors="errors?.code" />
@@ -167,7 +176,26 @@ const onUpload = (e: HTMLInputEvent) => {
       />
       <base-datepicker label="Issued Date" v-model="issued_date" />
       <base-datepicker label="Expired Date" v-model="expired_date" />
-      <base-textarea label="Notes" v-model="notes" />
+      <base-textarea label="Notes" v-model="notes" minHeight="120" />
+      <base-form label="Document File">
+        <div class="flex flex-col gap-4">
+          <base-file-upload @change="onUploadFile" accept="application/pdf, image/*" />
+          <a
+            v-if="document_url && document_mime?.includes('image')"
+            :href="document_url"
+            target="_blank"
+          >
+            <img :src="document_url" alt="" class="md:w-320px" />
+          </a>
+          <a
+            v-else-if="document_url && document_mime?.includes('pdf')"
+            :href="document_url"
+            target="_blank"
+          >
+            <base-icon icon="i-fas-file-pdf" class="w-100px h-100px" />
+          </a>
+        </div>
+      </base-form>
     </div>
   </base-card>
 </template>

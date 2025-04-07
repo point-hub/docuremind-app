@@ -8,6 +8,10 @@ export function useGetDocumentApi() {
       return {
         _id: response.data._id,
         cover_url: response.data.cover_url,
+        cover_mime: response.data.cover_mime,
+        document: response.data.document,
+        document_url: response.data.document_url,
+        document_mime: response.data.document_mime,
         code: response.data.code,
         name: response.data.name,
         type: response.data.type,

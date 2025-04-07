@@ -6,6 +6,7 @@ import { useGetOwnersApi } from './retrieve-all-owner.api'
 import { useGetVaultsApi } from './retrieve-all-vault.api'
 
 const cover = defineModel('cover')
+const document = defineModel('document')
 const code = defineModel<string>('code')
 const name = defineModel<string>('name')
 const type = defineModel<string>('type')
@@ -105,6 +106,12 @@ const onUpload = (e: HTMLInputEvent) => {
     cover.value = e.target.files[0]
   }
 }
+
+const onUploadFile = (e: HTMLInputEvent) => {
+  if (e.target.files && e.target.files[0]) {
+    document.value = e.target.files[0]
+  }
+}
 </script>
 
 <template>
@@ -112,7 +119,7 @@ const onUpload = (e: HTMLInputEvent) => {
     <template #header>Documents</template>
 
     <div class="flex flex-col gap-4 mt-5">
-      <base-file-upload label="Cover" @change="onUpload" />
+      <base-file-upload label="Cover" @change="onUpload" accept="image/*" />
       <base-input required v-model="code" label="Code" :errors="errors?.code" />
       <base-input required v-model="name" label="Name" :errors="errors?.name" />
       <base-autocomplete
@@ -146,7 +153,13 @@ const onUpload = (e: HTMLInputEvent) => {
       />
       <base-datepicker label="Issued Date" v-model="issued_date" />
       <base-datepicker label="Expired Date" v-model="expired_date" />
-      <base-textarea label="Notes" v-model="notes" />
+      <base-textarea label="Notes" v-model="notes" minHeight="120" />
+
+      <base-file-upload
+        label="Document File"
+        @change="onUploadFile"
+        accept="application/pdf, image/*"
+      />
     </div>
   </base-card>
 </template>
