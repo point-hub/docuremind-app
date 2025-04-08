@@ -163,6 +163,7 @@ const onUploadFile = (e: HTMLInputEvent) => {
         label="Document File"
         @change="onUploadFile"
         accept="application/pdf, image/*"
+        multiple
       />
     </div>
   </base-card>

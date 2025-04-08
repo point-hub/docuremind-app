@@ -2,6 +2,7 @@
 import { inject, type Ref, ref } from 'vue'
 
 import type { IToastRef } from '@/main-app.vue'
+import { handleError } from '@/utils/api'
 
 import { useDeleteDocumentApi } from './delete.api'
 import type { IFormError } from './form'
@@ -45,21 +46,28 @@ const onDelete = async () => {
   loadingState.value = true
   // start api call
   const deleteDocumentApi = useDeleteDocumentApi()
-  const responseDelete = await deleteDocumentApi.send(id.value as string, errors.value)
-  if (!responseDelete) {
+  try {
+    await deleteDocumentApi.send(id.value as string, errors.value)
+    emit('deleted')
+    password.value = ''
+    reason.value = ''
+    toastRef?.value.toast(`Delete Document "${name.value}" success`, { color: 'success' })
+  } catch (error) {
+    const errorResponse = handleError(error)
+    if (errorResponse.errors) {
+      errors.value.password = errorResponse.errors.password || []
+      errors.value.reason = errorResponse.errors.reason || []
+    }
+    if (errorResponse.message) {
+      toastRef?.value.toast(errorResponse.message, {
+        lists: errorResponse.lists,
+        color: 'danger'
+      })
+    }
+  } finally {
     loadingState.value = false
-    return
+    toggleModal(false)
   }
-
-  emit('deleted')
-  password.value = ''
-  reason.value = ''
-  toastRef?.value.toast(`Delete Document "${name.value}" success`, { color: 'success' })
-
-  toggleModal(false)
-
-  // stop loading state
-  loadingState.value = false
 }
 
 defineExpose({

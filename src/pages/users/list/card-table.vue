@@ -148,8 +148,8 @@ const onDelete = async () => {
         <thead>
           <tr>
             <th class="w-1"></th>
-            <th>Username</th>
             <th>Email</th>
+            <th>Username</th>
             <th>Name</th>
             <th>Role</th>
           </tr>

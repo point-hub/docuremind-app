@@ -221,8 +221,13 @@ const onDelete = async () => {
               <td>{{ document.owner.label }}</td>
               <td>{{ document.vault.label }}</td>
               <td>{{ document.rack }}</td>
-              <td>
+              <td class="w-1">
                 <base-badge variant="light">{{ document.status }}</base-badge>
+              </td>
+              <td class="w-1">
+                <router-link :to="`/documents/${document._id}/borrow`" class="text-blue btn">
+                  <base-button size="xs" variant="filled" color="primary"> Borrow </base-button>
+                </router-link>
               </td>
             </tr>
           </template>

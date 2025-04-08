@@ -3,14 +3,11 @@ import { watchDebounced } from '@vueuse/core'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import { useAuthStore } from '@/stores/auth.store'
-
 import DeleteModal from './components/delete/delete-modal.vue'
 import { useGetDocumentsApi } from './retrieve-all.api'
 
 const route = useRoute()
 const router = useRouter()
-const authStore = useAuthStore()
 const deleteModalRef = ref()
 const getDocumentsApi = useGetDocumentsApi()
 
@@ -28,9 +25,17 @@ interface IDocument {
     label: string
   }
   rack: string
+  issued_date: string
   expired_date: string
-  return_due_date: string
   status: string
+  requested_at: string
+  requested_by: {
+    _id: string
+    label: string
+  }
+  required_date: string
+  return_due_date: string
+  reason_for_borrowing: string
 }
 
 const searchAll = ref('')
@@ -44,7 +49,6 @@ const pagination = ref({
   total_document: 0
 })
 const isLoading = ref(false)
-const rowMenuRef = ref()
 
 const updateRouter = () => {
   router.push({
@@ -128,14 +132,6 @@ onMounted(async () => {
   pagination.value = response?.pagination
 })
 
-const onDeleteModal = (document: IDocument, index: number) => {
-  rowMenuRef.value[index].toggle(false)
-  deleteModalRef.value.toggleModal(true, {
-    id: document._id,
-    name: `${document.name}`
-  })
-}
-
 const onDelete = async () => {
   // call api
   const response = await getDocumentsApi.send(
@@ -156,15 +152,6 @@ const onDelete = async () => {
     </div>
     <div class="flex flex-col gap-4">
       <base-table>
-        <thead>
-          <tr>
-            <th>Document</th>
-            <th>Notes</th>
-            <th>Expired Date</th>
-            <th>Return Due Date</th>
-            <th>Status</th>
-          </tr>
-        </thead>
         <tbody>
           <tr v-if="isLoading">
             <td colspan="7">
@@ -176,33 +163,43 @@ const onDelete = async () => {
           <template v-if="!isLoading">
             <!-- <tr v-for="(document, index) in documents" :key="index">
               <td>
-                <router-link :to="`/documents/${document._id}`" class="text-blue">
-                  [{{ document.code }}] {{ document.name }}
-                </router-link>
-              </td>
-              <td>
                 <template class="flex flex-col gap-2">
-                  <p>
-                    Dokumen akan expired pada tanggal 2025-01-01, klik
-                    <base-button size="xs" variant="filled" shape="pill" color="primary"
-                      >Edit</base-button
-                    >
-                    untuk update expired date dokumen
+                  <p v-if="document.expired_date">
+                    <button class="text-white py-[0.8px] px-2 bg-blue-600 rounded-lg text-xs">
+                      Update
+                    </button>
+                    Dokumen <b>[{{ document.code }}] {{ document.name }}</b> yang akan expired pada
+                    tanggal
+                    <b>[Tanggal]</b>
                   </p>
-                  <p>
-                    Dokumen [Nama Dokumen] yang dipinjam [Nama User] jatuh tempo pada tanggal
-                    [Tanggal], klik
-                    <base-button size="xs" variant="filled" shape="pill" color="primary"
-                      >Return</base-button
-                    >
-                    jika sudah menerima pengembalian dokumen
+
+                  <p v-if="document.status === 'borrowed'">
+                    <button class="text-white py-[0.8px] px-2 bg-blue-600 rounded-lg text-xs">
+                      Return
+                    </button>
+                    Dokumen <b>[{{ document.code }}] {{ document.name }}</b> yang dipinjam oleh
+                    <b>[Nama User]</b>, batas pengembalian tanggal <b>[Tanggal]</b>
+                  </p>
+
+                  <p v-if="document.required_date">
+                    Ada permintaan pinjam dokumen
+                    <b>
+                      <router-link :to="`/documents/${document._id}`" class="text-blue">
+                        [{{ document.code }}] {{ document.name }}
+                      </router-link>
+                    </b>
+                    tanggal
+                    <b>{{ document.required_date }}</b>
+                    oleh [Nama User] untuk
+                    <b>{{ document.reason_for_borrowing }}</b>
+                    <span class="flex gap-1 mt-2">
+                      <button class="text-white py-[0.8px] px-2 bg-blue-600 rounded-lg text-xs">
+                        Approve
+                      </button>
+                      <button class="text-white px-2 bg-red-600 rounded-lg text-xs">Reject</button>
+                    </span>
                   </p>
                 </template>
-              </td>
-              <td>{{ document.expired_date }}</td>
-              <td>{{ document.return_due_date }}</td>
-              <td>
-                <base-badge variant="light">{{ document.status }}</base-badge>
               </td>
             </tr> -->
           </template>
