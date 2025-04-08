@@ -16,7 +16,11 @@ const router = createRouter({
       component: () => import('../layouts/app.vue'),
       children: [
         { path: '', redirect: '/home' },
-        { path: 'home', component: () => import('@/pages/home.vue'), meta: { requiresAuth: true } },
+        {
+          path: 'home',
+          component: () => import('@/pages/home/index.vue'),
+          meta: { requiresAuth: true }
+        },
         vaultRoutes,
         userRoutes,
         documentRoutes,
