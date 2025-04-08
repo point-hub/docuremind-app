@@ -58,7 +58,7 @@ const onSave = async () => {
       v-model:password="form.data.password"
       :errors="form.errors"
     />
-    {{ form }}
+
     <base-card class="py-4!">
       <div class="flex gap-2">
         <base-button color="primary" @click="onSave()">Save</base-button>

@@ -184,6 +184,7 @@ const onDelete = async () => {
                         <base-button
                           variant="text"
                           color="danger"
+                          v-if="user.role !== 'admin'"
                           @click="onDeleteModal(user, index)"
                         >
                           <div class="flex gap-2 w-full">
