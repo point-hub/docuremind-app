@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@point-hub/js-utils": "^0.0.6",
-    "@point-hub/papp": "^0.0.102",
+    "@point-hub/papp": "^0.0.105",
     "@point-hub/vue-cookie": "^0.2.1",
     "axios": "^1.8.4",
     "pinia": "^3.0.1",

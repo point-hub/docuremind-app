@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, onMounted, reactive, type Ref } from 'vue'
+import { inject, onMounted, reactive, type Ref, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import type { IToastRef } from '@/main-app.vue'
@@ -23,14 +23,21 @@ onMounted(async () => {
   }
 })
 
+const isSaving = ref(false)
 const onSave = async () => {
   try {
+    isSaving.value = true
     const response = await createDocumentsApi.send(form.data)
     if (response?.inserted_id) router.push('/documents')
   } catch (error) {
     const errorResponse = handleError(error)
     if (errorResponse.errors) {
+      form.errors.code = errorResponse.errors.code || []
       form.errors.name = errorResponse.errors.name || []
+      form.errors.type = errorResponse.errors.type || []
+      form.errors.vault = errorResponse.errors.vault || []
+      form.errors.owner = errorResponse.errors.owner || []
+      form.errors.rack = errorResponse.errors.rack || []
     }
     if (errorResponse.message) {
       toastRef?.value.toast(errorResponse.message, {
@@ -38,6 +45,8 @@ const onSave = async () => {
         color: 'danger'
       })
     }
+  } finally {
+    isSaving.value = false
   }
 }
 </script>
@@ -45,6 +54,8 @@ const onSave = async () => {
 <template>
   <div class="flex flex-col gap-4">
     <card-breadcrumbs />
+
+    <div class="bg-red w-full h-full"></div>
 
     <card-form
       v-model:cover="form.data.cover"
@@ -63,7 +74,12 @@ const onSave = async () => {
 
     <base-card class="py-4!">
       <div class="flex gap-2">
-        <base-button color="primary" @click="onSave()">Save</base-button>
+        <base-button color="primary" @click="onSave()" :disabled="isSaving">
+          <template v-if="!isSaving">Save</template>
+          <template v-else>
+            Saving <base-icon icon="i-fas-spinner" class="h-4 w-4 animate-spin" />
+          </template>
+        </base-button>
       </div>
     </base-card>
   </div>

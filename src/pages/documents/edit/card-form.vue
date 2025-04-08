@@ -138,8 +138,8 @@ const onUploadFile = (e: HTMLInputEvent) => {
     <div class="flex flex-col gap-4 mt-5">
       <base-form label="Cover">
         <div>
-          <img v-if="cover_url" :src="cover_url" alt="" class="md:w-320px" />
           <base-file-upload @change="onUpload" accept="image/*" />
+          <img v-if="cover_url" :src="cover_url" alt="" class="md:w-320px" />
         </div>
       </base-form>
       <base-input required v-model="code" label="Code" :errors="errors?.code" />

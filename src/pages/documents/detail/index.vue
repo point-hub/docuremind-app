@@ -7,6 +7,7 @@ import { useAuthStore } from '@/stores/auth.store'
 import CardAction from './card-action.vue'
 import CardBreadcrumbs from './card-breadcrumbs.vue'
 import CardForm from './card-form.vue'
+import CardMeta from './card-meta.vue'
 import { useForm } from './form'
 import { useGetDocumentApi } from './retrieve.api'
 
@@ -50,6 +51,13 @@ onMounted(async () => {
       :expired_date="form.data.expired_date"
       :notes="form.data.notes"
       :status="form.data.status"
+    />
+
+    <card-meta
+      :created_at="form.data.created_at"
+      :created_by="form.data.created_by"
+      :updated_at="form.data.updated_at"
+      :updated_by="form.data.updated_by"
     />
   </div>
 </template>

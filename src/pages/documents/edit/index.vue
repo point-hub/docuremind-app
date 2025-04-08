@@ -35,12 +35,14 @@ onMounted(async () => {
   }
 })
 
+const isSaving = ref(false)
 const onUpdate = async () => {
   if (authStore.role !== 'admin') {
     router.push('/unauthorized')
   }
 
   try {
+    isSaving.value = true
     const response = await updateDocumentApi.send(
       route.params.id.toString(),
       form.data,
@@ -58,6 +60,8 @@ const onUpdate = async () => {
         color: 'danger'
       })
     }
+  } finally {
+    isSaving.value = false
   }
 }
 </script>
@@ -65,8 +69,7 @@ const onUpdate = async () => {
 <template>
   <div class="flex flex-col gap-4">
     <card-breadcrumbs />
-    <pre><code>{{ form.data }}</code></pre>
-    <img :src="form.data.document_url" alt="" />
+
     <card-form
       :form-id="route.params.id.toString()"
       v-model:cover="form.data.cover"
@@ -88,7 +91,12 @@ const onUpdate = async () => {
 
     <base-card class="py-4!">
       <div class="flex gap-2">
-        <base-button color="primary" @click="onUpdate()">Update</base-button>
+        <base-button color="primary" @click="onUpdate()" :disabled="isSaving">
+          <template v-if="!isSaving">Update</template>
+          <template v-else>
+            Updating <base-icon icon="i-fas-spinner" class="h-4 w-4 animate-spin" />
+          </template>
+        </base-button>
       </div>
     </base-card>
   </div>

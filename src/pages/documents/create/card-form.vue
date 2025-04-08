@@ -119,7 +119,7 @@ const onUploadFile = (e: HTMLInputEvent) => {
     <template #header>Documents</template>
 
     <div class="flex flex-col gap-4 mt-5">
-      <base-file-upload label="Cover" @change="onUpload" accept="image/*" />
+      <base-file-upload label="Cover" @change="onUpload" accept="image/*" :errors="errors?.cover" />
       <base-input required v-model="code" label="Code" :errors="errors?.code" />
       <base-input required v-model="name" label="Name" :errors="errors?.name" />
       <base-autocomplete
@@ -128,6 +128,7 @@ const onUploadFile = (e: HTMLInputEvent) => {
         :options="optionsType"
         label="Type"
         layout="vertical"
+        :errors="errors?.type"
       />
       <base-autocomplete
         required
@@ -135,6 +136,7 @@ const onUploadFile = (e: HTMLInputEvent) => {
         :options="owners?.data"
         label="Owner"
         layout="vertical"
+        :errors="errors?.owner"
       />
       <base-autocomplete
         required
@@ -142,6 +144,7 @@ const onUploadFile = (e: HTMLInputEvent) => {
         :options="vaults?.data"
         label="Vault"
         layout="vertical"
+        :errors="errors?.vault"
       />
       <base-autocomplete
         v-if="selectedVault"
@@ -150,6 +153,7 @@ const onUploadFile = (e: HTMLInputEvent) => {
         :options="optionsRack"
         label="Rack"
         layout="vertical"
+        :errors="errors?.rack"
       />
       <base-datepicker label="Issued Date" v-model="issued_date" />
       <base-datepicker label="Expired Date" v-model="expired_date" />
