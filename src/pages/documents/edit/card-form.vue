@@ -15,7 +15,7 @@ const name = defineModel<string>('name')
 const type = defineModel<string>('type')
 const owner = defineModel<IOption>('owner')
 const vault = defineModel<IOption>('vault')
-const rack = defineModel<string>('rack')
+const rack = defineModel<IOption>('rack')
 const issued_date = defineModel<string>('issued_date')
 const expired_date = defineModel<string>('expired_date')
 const notes = defineModel<string>('notes')
@@ -77,14 +77,6 @@ watch(
 )
 
 watch(
-  () => selectedRack.value,
-  () => {
-    rack.value = selectedRack.value?.label
-  },
-  { deep: true }
-)
-
-watch(
   () => selectedType.value,
   () => {
     type.value = selectedType.value?._id ?? ''
@@ -108,7 +100,19 @@ watch(
     optionsRack.value = updatedVaults
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     selectedRack.value = optionsRack.value.find((option: any) => {
-      return option.name === rack.value
+      return option.name === rack.value?.label
+    })
+  },
+  { deep: true }
+)
+
+watch(
+  () => selectedRack.value,
+  () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    rack.value = optionsRack.value.find((option: any) => {
+      console.log(option.name, rack.value, selectedRack.value)
+      return option.name === selectedRack.value.label
     })
   },
   { deep: true }
@@ -165,7 +169,6 @@ const onUploadFile = (e: HTMLInputEvent) => {
         label="Vault"
         layout="vertical"
       />
-
       <base-autocomplete
         v-if="selectedVault"
         required

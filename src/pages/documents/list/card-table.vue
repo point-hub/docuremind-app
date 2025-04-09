@@ -27,7 +27,11 @@ interface IDocument {
     _id: string
     label: string
   }
-  rack: string
+  rack: {
+    _id: string
+    label: string
+  }
+  expired_date: string
   status: string
 }
 
@@ -165,6 +169,7 @@ const onDelete = async () => {
             <th>Owner</th>
             <th>Vault</th>
             <th>Rack</th>
+            <th>Expired Date</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -220,7 +225,8 @@ const onDelete = async () => {
               <td>{{ document.name }}</td>
               <td>{{ document.owner.label }}</td>
               <td>{{ document.vault.label }}</td>
-              <td>{{ document.rack }}</td>
+              <td>{{ document.rack.label }}</td>
+              <td>{{ document.expired_date }}</td>
               <td class="w-1">
                 <base-badge variant="light">{{ document.status }}</base-badge>
               </td>

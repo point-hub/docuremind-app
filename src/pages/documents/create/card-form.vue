@@ -12,7 +12,7 @@ const name = defineModel<string>('name')
 const type = defineModel<string>('type')
 const owner = defineModel<IOption>('owner')
 const vault = defineModel<IOption>('vault')
-const rack = defineModel<string>('rack')
+const rack = defineModel<IOption>('rack')
 const issued_date = defineModel<string>('issued_date')
 const expired_date = defineModel<string>('expired_date')
 const notes = defineModel<string>('notes')
@@ -67,7 +67,10 @@ watch(
 watch(
   () => selectedRack.value,
   () => {
-    rack.value = selectedRack.value?.label
+    rack.value = {
+      _id: selectedRack.value?.code ?? '',
+      label: selectedRack.value?.label ?? ''
+    }
   },
   { deep: true }
 )
@@ -146,6 +149,7 @@ const onUploadFile = (e: HTMLInputEvent) => {
         layout="vertical"
         :errors="errors?.vault"
       />
+      {{ rack }}
       <base-autocomplete
         v-if="selectedVault"
         required
