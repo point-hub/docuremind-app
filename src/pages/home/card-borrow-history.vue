@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import { watchDebounced } from '@vueuse/core'
-import { inject, onMounted, type Ref, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import type { IToastRef } from '@/main-app.vue'
-
-import { useBorrowApproveDocumentApi } from './borrow-approve.api'
 import { useGetDocumentsApi } from './retrieve-borrow-history.api'
 
 const route = useRoute()
 const router = useRouter()
 const getDocumentsApi = useGetDocumentsApi()
-const borrowApproveDocumentApi = useBorrowApproveDocumentApi()
 
 interface IDocument {
   _id: string
@@ -140,30 +136,11 @@ onMounted(async () => {
   documents.value = response?.data
   pagination.value = response?.pagination
 })
-
-const toastRef = inject<Ref<IToastRef>>('toastRef')
-const onApprove = async (borrow_id: string, document: IDocument) => {
-  const res = await borrowApproveDocumentApi.send(borrow_id)
-  console.log(ref)
-  if (res?.matched_count === 1) {
-    // if (res?.modified_count === 1) {
-    toastRef?.value.toast(`Permintaan pinjam dokumen "${document.name}" telah di approve`, {
-      color: 'success'
-    })
-    // call api
-    const response = await getDocumentsApi.send(
-      { all: searchAll.value, ...search.value },
-      pagination.value.page
-    )
-    documents.value = response?.data
-    pagination.value = response?.pagination
-  }
-}
 </script>
 
 <template>
   <base-card>
-    <template #header>Borrow History</template>
+    <template #header>Borrowing History</template>
 
     <div class="my-5 flex gap-2">
       <base-input v-model="searchAll" placeholder="Search..." border="full" class="w-full" />
