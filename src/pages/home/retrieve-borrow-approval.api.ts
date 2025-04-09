@@ -11,8 +11,7 @@ export function useGetDocumentsApi() {
       const response = await axios.get('/v1/documents', {
         params: {
           filter: {
-            search: search.all,
-            expired: true
+            search: search.all
           },
           page: page
         }

@@ -149,7 +149,6 @@ const onUploadFile = (e: HTMLInputEvent) => {
         layout="vertical"
         :errors="errors?.vault"
       />
-      {{ rack }}
       <base-autocomplete
         v-if="selectedVault"
         required

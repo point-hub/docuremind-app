@@ -22,13 +22,24 @@ const errors = defineModel<IFormError>('errors')
         label="Document"
         :errors="errors?.document"
       />
-      <base-datepicker required label="Required Date" v-model="required_date" />
-      <base-datepicker required label="Return Due Date" v-model="return_due_date" />
+      <base-datepicker
+        required
+        label="Required Date"
+        v-model="required_date"
+        :errors="errors?.required_date"
+      />
+      <base-datepicker
+        required
+        label="Return Due Date"
+        v-model="return_due_date"
+        :errors="errors?.return_due_date"
+      />
       <base-textarea
         required
         label="Reason for Borrowing"
         v-model="reason_for_borrowing"
         minHeight="120"
+        :errors="errors?.reason_for_borrowing"
       />
     </div>
   </base-card>
