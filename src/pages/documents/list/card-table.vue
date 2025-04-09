@@ -228,7 +228,12 @@ const onDelete = async () => {
               <td>{{ document.rack.label }}</td>
               <td>{{ document.expired_date }}</td>
               <td class="w-1">
-                <base-badge variant="light">{{ document.status }}</base-badge>
+                <base-badge v-if="document.status === 'available'" variant="light" color="primary">
+                  {{ document.status }}
+                </base-badge>
+                <base-badge v-if="document.status === 'borrowed'" variant="light" color="danger">
+                  {{ document.status }}
+                </base-badge>
               </td>
               <td class="w-1">
                 <router-link :to="`/documents/${document._id}/borrow`" class="text-blue btn">

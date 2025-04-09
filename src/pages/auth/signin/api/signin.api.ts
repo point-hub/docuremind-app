@@ -12,7 +12,8 @@ export const signinApiRequest = async (data: IForm) => {
 
   const authStore = useAuthStore()
   authStore.update({
-    name: response.data.username
+    name: response.data.username,
+    email: response.data.email
   })
 
   return response

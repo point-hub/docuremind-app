@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { watchDebounced } from '@vueuse/core'
-import { onMounted, ref } from 'vue'
+import { inject, onMounted, type Ref, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import DeleteModal from './components/delete/delete-modal.vue'
-import { useGetDocumentsApi } from './retrieve-all.api'
+import type { IToastRef } from '@/main-app.vue'
+
+import { useBorrowApproveDocumentApi } from './borrow-approve.api'
+import { useGetDocumentsApi } from './retrieve-borrow-history.api'
 
 const route = useRoute()
 const router = useRouter()
-const deleteModalRef = ref()
 const getDocumentsApi = useGetDocumentsApi()
+const borrowApproveDocumentApi = useBorrowApproveDocumentApi()
 
 interface IDocument {
   _id: string
@@ -24,7 +26,12 @@ interface IDocument {
     _id: string
     label: string
   }
-  rack: string
+  rack: {
+    _id: string
+    label: string
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  borrows: any[]
   issued_date: string
   expired_date: string
   status: string
@@ -134,20 +141,29 @@ onMounted(async () => {
   pagination.value = response?.pagination
 })
 
-const onDelete = async () => {
-  // call api
-  const response = await getDocumentsApi.send(
-    { all: searchAll.value, ...search.value },
-    pagination.value.page
-  )
-  documents.value = response?.data
-  pagination.value = response?.pagination
+const toastRef = inject<Ref<IToastRef>>('toastRef')
+const onApprove = async (borrow_id: string, document: IDocument) => {
+  const res = await borrowApproveDocumentApi.send(borrow_id)
+  console.log(ref)
+  if (res?.matched_count === 1) {
+    // if (res?.modified_count === 1) {
+    toastRef?.value.toast(`Permintaan pinjam dokumen "${document.name}" telah di approve`, {
+      color: 'success'
+    })
+    // call api
+    const response = await getDocumentsApi.send(
+      { all: searchAll.value, ...search.value },
+      pagination.value.page
+    )
+    documents.value = response?.data
+    pagination.value = response?.pagination
+  }
 }
 </script>
 
 <template>
   <base-card>
-    <template #header>Expired Document</template>
+    <template #header>Borrow History</template>
 
     <div class="my-5 flex gap-2">
       <base-input v-model="searchAll" placeholder="Search..." border="full" class="w-full" />
@@ -163,28 +179,37 @@ const onDelete = async () => {
             </td>
           </tr>
           <template v-if="!isLoading">
-            <tr v-for="(document, index) in documents" :key="index">
-              <td>
-                <template class="flex flex-col gap-2">
-                  <p>
-                    Update Dokumen
-                    <router-link :to="`/documents/${document._id}`" class="text-blue">
-                      <b> [{{ document.code }}] {{ document.name }} </b>
-                    </router-link>
-                    yang akan expired pada tanggal
-                    <b>{{ document.expired_date }}</b>
-                  </p>
-                </template>
-              </td>
-              <td class="w-1">
-                <router-link
-                  :to="`/documents/${document._id}/edit`"
-                  class="text-white py-1 px-2 bg-blue-600 text-xs mr-2"
-                >
-                  Update
-                </router-link>
-              </td>
-            </tr>
+            <template v-for="(document, index) in documents" :key="index">
+              <tr v-for="(borrow, index) in document.borrows" :key="index">
+                <td>
+                  <template class="flex flex-col gap-2">
+                    <p>
+                      Permintaan pinjam dokumen
+                      <b>
+                        <router-link :to="`/documents/${document._id}`" class="text-blue">
+                          [{{ document.code }}] {{ document.name }}
+                        </router-link>
+                      </b>
+                      tanggal
+                      <b>{{ borrow.required_date }}</b>
+                      oleh <b>{{ borrow.requested_by.label }}</b> untuk
+                      <b>{{ borrow.reason_for_borrowing }}</b>
+                    </p>
+                  </template>
+                </td>
+                <td class="w-1">
+                  <base-badge v-if="borrow.status === 'pending'" variant="light" color="info"
+                    >Pending</base-badge
+                  >
+                  <base-badge v-if="borrow.status === 'approved'" variant="light" color="success"
+                    >Approved</base-badge
+                  >
+                  <base-badge v-if="borrow.status === 'rejected'" variant="light" color="danger"
+                    >Rejected</base-badge
+                  >
+                </td>
+              </tr>
+            </template>
           </template>
         </tbody>
       </base-table>
@@ -196,7 +221,6 @@ const onDelete = async () => {
         @update:model-value="onPageUpdate()"
       />
     </div>
-    <delete-modal ref="deleteModalRef" @deleted="onDelete" />
   </base-card>
 </template>
 

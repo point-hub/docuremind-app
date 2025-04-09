@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import { watchDebounced } from '@vueuse/core'
-import { onMounted, ref } from 'vue'
+import { inject, onMounted, type Ref, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import CardExpired from './card-expired.vue'
-import DeleteModal from './components/delete/delete-modal.vue'
-import { useGetDocumentsApi } from './retrieve-all.api'
+import type { IToastRef } from '@/main-app.vue'
+import { handleError } from '@/utils/api'
+
+import { useBorrowApproveDocumentApi } from './borrow-approve.api'
+import { useBorrowRejectDocumentApi } from './borrow-reject.api'
+import { useGetDocumentsApi } from './retrieve-borrow-approval.api'
 
 const route = useRoute()
 const router = useRouter()
-const deleteModalRef = ref()
 const getDocumentsApi = useGetDocumentsApi()
+
+const borrowApproveDocumentApi = useBorrowApproveDocumentApi()
+const borrowRejectDocumentApi = useBorrowRejectDocumentApi()
 
 interface IDocument {
   _id: string
@@ -25,7 +30,12 @@ interface IDocument {
     _id: string
     label: string
   }
-  rack: string
+  rack: {
+    _id: string
+    label: string
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  borrows: any[]
   issued_date: string
   expired_date: string
   status: string
@@ -135,20 +145,64 @@ onMounted(async () => {
   pagination.value = response?.pagination
 })
 
-const onDelete = async () => {
-  // call api
-  const response = await getDocumentsApi.send(
-    { all: searchAll.value, ...search.value },
-    pagination.value.page
-  )
-  documents.value = response?.data
-  pagination.value = response?.pagination
+const toastRef = inject<Ref<IToastRef>>('toastRef')
+const onApprove = async (borrow_id: string, document: IDocument) => {
+  try {
+    const res = await borrowApproveDocumentApi.send(document._id, borrow_id)
+    console.log('1111', res)
+    if (res?.modified_count === 1) {
+      toastRef?.value.toast(`Permintaan pinjam dokumen "${document.name}" telah di approve`, {
+        color: 'success'
+      })
+      // call api
+      const response = await getDocumentsApi.send(
+        { all: searchAll.value, ...search.value },
+        pagination.value.page
+      )
+      documents.value = response?.data
+      pagination.value = response?.pagination
+    }
+  } catch (error) {
+    const errorResponse = handleError(error)
+    if (errorResponse.message) {
+      toastRef?.value.toast(errorResponse.message, {
+        lists: errorResponse.lists,
+        color: 'danger'
+      })
+    }
+  } finally {
+    isLoading.value = false
+  }
+}
+const onReject = async (borrow_id: string, document: IDocument) => {
+  try {
+    console.log(document._id, borrow_id)
+    const res = await borrowRejectDocumentApi.send(document._id, borrow_id)
+    if (res?.modified_count === 1) {
+      toastRef?.value.toast(`Permintaan pinjam dokumen "${document.name}" telah di reject`, {
+        color: 'danger'
+      })
+      // call api
+      const response = await getDocumentsApi.send(
+        { all: searchAll.value, ...search.value },
+        pagination.value.page
+      )
+      documents.value = response?.data
+      pagination.value = response?.pagination
+    }
+  } catch (error) {
+    const errorResponse = handleError(error)
+    if (errorResponse.message) {
+      toastRef?.value.toast(errorResponse.message, {
+        lists: errorResponse.lists,
+        color: 'danger'
+      })
+    }
+  }
 }
 </script>
 
 <template>
-  <card-expired />
-
   <base-card>
     <template #header>Request for borrowing the Document</template>
 
@@ -166,156 +220,54 @@ const onDelete = async () => {
             </td>
           </tr>
           <template v-if="!isLoading">
-            <tr v-for="(document, index) in documents" :key="index">
-              <td>
-                <template class="flex flex-col gap-2">
-                  <p>
-                    Permintaan pinjam dokumen
-                    <b>
-                      <router-link :to="`/documents/${document._id}`" class="text-blue">
-                        [{{ document.code }}] {{ document.name }}
-                      </router-link>
-                    </b>
-                    tanggal
-                    <b>{{ document.required_date }}</b>
-                    <!-- oleh {{ document.borrows }} untuk -->
-                    <b>{{ document.reason_for_borrowing }}</b>
-                    <span class="flex gap-1 mt-2">
-                      <button class="text-white py-[0.8px] px-2 bg-blue-600 rounded-lg text-xs">
-                        Approve
-                      </button>
-                      <button class="text-white px-2 bg-red-600 rounded-lg text-xs">Reject</button>
-                    </span>
-                  </p>
-                </template>
-              </td>
-            </tr>
-          </template>
-        </tbody>
-      </base-table>
-      <base-pagination
-        v-if="!isLoading"
-        v-model="pagination.page"
-        :page-size="pagination.page_size"
-        :total-document="pagination.total_document"
-        @update:model-value="onPageUpdate()"
-      />
-    </div>
-    <delete-modal ref="deleteModalRef" @deleted="onDelete" />
-  </base-card>
-
-  <base-card>
-    <template #header>Request for returning the Document</template>
-
-    <div class="my-5 flex gap-2">
-      <base-input v-model="searchAll" placeholder="Search..." border="full" class="w-full" />
-    </div>
-    <div class="flex flex-col gap-4">
-      <base-table>
-        <tbody>
-          <tr v-if="isLoading">
-            <td colspan="7">
-              <p class="w-full h-32 flex items-center justify-center gap-2 text-center text-xl">
-                <base-spinner color="primary" size="xs" /> <span>Loading</span>
-              </p>
-            </td>
-          </tr>
-          <template v-if="!isLoading">
-            <tr v-for="(document, index) in documents" :key="index">
-              <td>
-                <template class="flex flex-col gap-2">
-                  <p>
-                    <button class="text-white py-[0.8px] px-2 bg-blue-600 rounded-lg text-xs">
-                      Return
+            <template v-for="(document, index) in documents" :key="index">
+              <tr v-for="(borrow, index) in document.borrows" :key="index">
+                <td>
+                  <template class="flex flex-col gap-2">
+                    <p>
+                      Permintaan pinjam dokumen
+                      <b>
+                        <router-link :to="`/documents/${document._id}`" class="text-blue">
+                          [{{ document.code }}] {{ document.name }}
+                        </router-link>
+                      </b>
+                      tanggal
+                      <b>{{ borrow.required_date }}</b>
+                      oleh <b>{{ borrow.requested_by.label }}</b> untuk
+                      <b>{{ borrow.reason_for_borrowing }}</b>
+                    </p>
+                  </template>
+                </td>
+                <td class="text-center w-1">
+                  <base-badge
+                    v-if="document.status === 'available'"
+                    variant="light"
+                    color="primary"
+                  >
+                    {{ document.status }}
+                  </base-badge>
+                  <base-badge v-if="document.status === 'borrowed'" variant="light" color="danger">
+                    {{ document.status }}
+                  </base-badge>
+                </td>
+                <td class="w-1">
+                  <span class="flex gap-1">
+                    <button
+                      class="text-white py-1 px-2 bg-blue-600 text-xs"
+                      @click="onApprove(borrow._id, document)"
+                    >
+                      Approve
                     </button>
-                    Dokumen <b>[{{ document.code }}] {{ document.name }}</b> yang dipinjam oleh
-                    <b>[Nama User]</b>, batas pengembalian tanggal <b>[Tanggal]</b>
-                  </p>
-
-                  <p>
-                    Ada permintaan pinjam dokumen
-                    <b>
-                      <router-link :to="`/documents/${document._id}`" class="text-blue">
-                        [{{ document.code }}] {{ document.name }}
-                      </router-link>
-                    </b>
-                    tanggal
-                    <b>{{ document.required_date }}</b>
-                    oleh [Nama User] untuk
-                    <b>{{ document.reason_for_borrowing }}</b>
-                    <span class="flex gap-1 mt-2">
-                      <button class="text-white py-[0.8px] px-2 bg-blue-600 rounded-lg text-xs">
-                        Approve
-                      </button>
-                      <button class="text-white px-2 bg-red-600 rounded-lg text-xs">Reject</button>
-                    </span>
-                  </p>
-                </template>
-              </td>
-            </tr>
-          </template>
-        </tbody>
-      </base-table>
-      <base-pagination
-        v-if="!isLoading"
-        v-model="pagination.page"
-        :page-size="pagination.page_size"
-        :total-document="pagination.total_document"
-        @update:model-value="onPageUpdate()"
-      />
-    </div>
-    <delete-modal ref="deleteModalRef" @deleted="onDelete" />
-  </base-card>
-
-  <base-card>
-    <template #header>Request for returning the Document</template>
-
-    <div class="my-5 flex gap-2">
-      <base-input v-model="searchAll" placeholder="Search..." border="full" class="w-full" />
-    </div>
-    <div class="flex flex-col gap-4">
-      <base-table>
-        <tbody>
-          <tr v-if="isLoading">
-            <td colspan="7">
-              <p class="w-full h-32 flex items-center justify-center gap-2 text-center text-xl">
-                <base-spinner color="primary" size="xs" /> <span>Loading</span>
-              </p>
-            </td>
-          </tr>
-          <template v-if="!isLoading">
-            <tr v-for="(document, index) in documents" :key="index">
-              <td>
-                <template class="flex flex-col gap-2">
-                  <p>
-                    <button class="text-white py-[0.8px] px-2 bg-blue-600 rounded-lg text-xs">
-                      Return
+                    <button
+                      class="text-white py-1 px-2 bg-red-600 text-xs"
+                      @click="onReject(borrow._id, document)"
+                    >
+                      Reject
                     </button>
-                    Dokumen <b>[{{ document.code }}] {{ document.name }}</b> yang dipinjam oleh
-                    <b>[Nama User]</b>, batas pengembalian tanggal <b>[Tanggal]</b>
-                  </p>
-
-                  <p>
-                    Ada permintaan pinjam dokumen
-                    <b>
-                      <router-link :to="`/documents/${document._id}`" class="text-blue">
-                        [{{ document.code }}] {{ document.name }}
-                      </router-link>
-                    </b>
-                    tanggal
-                    <b>{{ document.required_date }}</b>
-                    oleh [Nama User] untuk
-                    <b>{{ document.reason_for_borrowing }}</b>
-                    <span class="flex gap-1 mt-2">
-                      <button class="text-white py-[0.8px] px-2 bg-blue-600 rounded-lg text-xs">
-                        Approve
-                      </button>
-                      <button class="text-white px-2 bg-red-600 rounded-lg text-xs">Reject</button>
-                    </span>
-                  </p>
-                </template>
-              </td>
-            </tr>
+                  </span>
+                </td>
+              </tr>
+            </template>
           </template>
         </tbody>
       </base-table>
@@ -327,7 +279,6 @@ const onDelete = async () => {
         @update:model-value="onPageUpdate()"
       />
     </div>
-    <delete-modal ref="deleteModalRef" @deleted="onDelete" />
   </base-card>
 </template>
 

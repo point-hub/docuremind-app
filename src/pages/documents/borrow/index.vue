@@ -3,7 +3,6 @@ import { inject, onMounted, reactive, type Ref, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import type { IToastRef } from '@/main-app.vue'
-import { useAuthStore } from '@/stores/auth.store'
 import { handleError } from '@/utils/api'
 
 import { useBorrowDocumentApi } from './borrow.api'
@@ -14,7 +13,7 @@ import { useGetDocumentApi } from './retrieve.api'
 
 const route = useRoute()
 const router = useRouter()
-const authStore = useAuthStore()
+
 const getDocumentApi = useGetDocumentApi()
 const borrowDocumentApi = useBorrowDocumentApi()
 
@@ -23,10 +22,6 @@ const formId = ref()
 const toastRef = inject<Ref<IToastRef>>('toastRef')
 
 onMounted(async () => {
-  if (authStore.role !== 'admin') {
-    router.push('/unauthorized')
-  }
-
   const response = await getDocumentApi.send(route.params.id.toString())
 
   if (response) {
@@ -37,10 +32,6 @@ onMounted(async () => {
 
 const isSaving = ref(false)
 const onBorrow = async () => {
-  if (authStore.role !== 'admin') {
-    router.push('/unauthorized')
-  }
-
   try {
     isSaving.value = true
     const response = await borrowDocumentApi.send(

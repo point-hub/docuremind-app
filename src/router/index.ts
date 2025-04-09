@@ -45,6 +45,7 @@ const isAuthenticated = async () => {
       authStore.update({
         _id: response.data._id,
         name: response.data.username,
+        email: response.data.email,
         role: response.data.role
       })
       return true
