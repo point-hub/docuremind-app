@@ -109,11 +109,10 @@ watch(
 watch(
   () => selectedRack.value,
   () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    rack.value = optionsRack.value.find((option: any) => {
-      console.log(option.name, rack.value, selectedRack.value)
-      return option.name === selectedRack.value.label
-    })
+    rack.value = {
+      _id: selectedRack.value?.code ?? '',
+      label: selectedRack.value?.label ?? ''
+    }
   },
   { deep: true }
 )

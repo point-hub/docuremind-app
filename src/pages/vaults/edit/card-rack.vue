@@ -81,7 +81,6 @@ const checkCodeUnique = (value: string) => {
   if (updateIndex.value !== undefined) {
     filteredArr = filteredArr?.filter((_, index) => index !== updateIndex.value)
   }
-  console.log(filteredArr)
   return filteredArr?.findIndex((rack) => rack.code === value) === -1
 }
 const checkNameUnique = (value: string) => {
@@ -141,7 +140,7 @@ const checkNameUnique = (value: string) => {
     <div class="max-h-90vh overflow-auto p-4">
       <h2 class="py-4 text-2xl font-bold">Rack</h2>
       <div class="space-y-8">
-        <base-input required v-model="code" label="Code" :errors="errors?.code" />
+        <base-input disabled required v-model="code" label="Code" :errors="errors?.code" />
         <base-input required v-model="name" label="Name" :errors="errors?.name" />
         <base-button color="primary" size="xs" @click="onUpdate()" is-block> Update </base-button>
       </div>
