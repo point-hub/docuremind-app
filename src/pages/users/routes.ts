@@ -22,7 +22,7 @@ export default {
       meta: { requiresAuth: true }
     },
     {
-      path: ':id/profile',
+      path: 'profile',
       component: () => import('@/pages/users/profile/index.vue'),
       meta: { requiresAuth: true }
     }

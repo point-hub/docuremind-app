@@ -52,7 +52,7 @@ const onSignout = () => {
           </button>
           <template #content>
             <div class="popper-root p-2">
-              <router-link
+              <!-- <router-link
                 to="/users/profile"
                 variant="text"
                 color="primary"
@@ -69,9 +69,20 @@ const onSignout = () => {
                   <p class="font-semibold line-clamp-2">DocuRemind</p>
                   <p class="line-clamp-2">{{ authStore.name }}</p>
                 </div>
-              </router-link>
-              <base-divider orientation="vertical" />
+              </router-link> -->
+              <!-- <base-divider orientation="vertical" /> -->
 
+              <router-link to="/users/profile" class="w-full" @click="accountPopoverRef.toggle()">
+                <base-button
+                  variant="text"
+                  color="primary"
+                  size="sm"
+                  class="text-slate-900 dark:text-slate-50 flex justify-left! w-full"
+                >
+                  <BaseIcon icon="i-ph-user-duotone" class="text-2xl" />
+                  <p>Acccount</p>
+                </base-button>
+              </router-link>
               <base-button
                 variant="text"
                 color="primary"

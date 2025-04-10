@@ -206,21 +206,33 @@ const onReturn = async (document: IDocument) => {
                     oleh <b>{{ document.borrow.requested_by.label }}</b> untuk
                     <b>{{ document.borrow.reason_for_borrowing }}</b>
                   </p>
+                  <span
+                    v-if="
+                      document.borrow.return_due_date < new Date().toISOString() &&
+                      document.borrow.status === 'approved'
+                    "
+                  >
+                    <span class="bg-red-500 text-white px-1"
+                      >Overdue: {{ document.borrow.return_due_date }}</span
+                    >
+                  </span>
                 </template>
               </td>
               <td class="w-1">
-                <base-button
-                  v-if="
-                    document.borrow.requested_by._id === authStore._id &&
-                    document.borrow.status === 'approved'
-                  "
-                  size="xs"
-                  variant="filled"
-                  color="primary"
-                  @click="onReturn(document)"
-                >
-                  Return
-                </base-button>
+                <div class="flex gap-2">
+                  <base-button
+                    v-if="
+                      document.borrow.requested_by._id === authStore._id &&
+                      document.borrow.status === 'approved'
+                    "
+                    size="xs"
+                    variant="filled"
+                    color="primary"
+                    @click="onReturn(document)"
+                  >
+                    Return
+                  </base-button>
+                </div>
               </td>
               <td class="w-1">
                 <base-badge

@@ -161,11 +161,32 @@ const onUploadFile = (e: HTMLInputEvent) => {
       <base-datepicker label="Issued Date" v-model="issued_date" />
       <base-datepicker label="Expired Date" v-model="expired_date" />
       <base-textarea label="Notes" v-model="notes" minHeight="120" />
-
-      <div>
-        <div class="text-sm font-semibold text-gray-500 mb-2">Document File</div>
-        <base-file-upload @change="onUploadFile" accept="application/pdf, image/*" multiple />
-      </div>
+    </div>
+  </base-card>
+  <base-card class="hidden">
+    <template #header>Document Files</template>
+    <div class="grid grid-cols-5 gap-4">
+      <base-file-upload
+        v-for="i in 2"
+        :key="i"
+        @change="onUploadFile"
+        border="none"
+        accept="application/pdf, image/*"
+        multiple
+      >
+        <template v-slot="{ fileRef }">
+          <base-button size="sm" @click="fileRef.click()">
+            <div
+              class="text-sm font-semibold text-gray-500 flex-1 shadow h-60 flex flex-col items-center justify-center w-48 bg-slate-200"
+            >
+              <div>
+                <base-icon icon="i-fad-file-import" class="w-12 h-12"></base-icon>
+              </div>
+              <div>Choose File</div>
+            </div>
+          </base-button>
+        </template>
+      </base-file-upload>
     </div>
   </base-card>
 </template>
