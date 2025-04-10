@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { watchDebounced } from '@vueuse/core'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useAuthStore } from '@/stores/auth.store'
 
 import DeleteModal from '../components/delete/delete-modal.vue'
+import ExpiredChoosen from '../components/expired-choosen/choosen.vue'
 import { useGetDocumentsApi } from './retrieve-all.api'
 
 const route = useRoute()
@@ -37,7 +38,13 @@ interface IDocument {
 
 const searchAll = ref('')
 const search = ref({
-  name: ''
+  code: '',
+  name: '',
+  owner: '',
+  vault: '',
+  rack: '',
+  is_expired: '',
+  status: ''
 })
 const documents = ref<IDocument[]>()
 const pagination = ref({
@@ -54,7 +61,13 @@ const updateRouter = () => {
     query: {
       search: searchAll.value,
       page: pagination.value.page,
-      'search.name': search.value.name
+      'search.code': search.value.code,
+      'search.name': search.value.name,
+      'search.owner': search.value.owner,
+      'search.vault': search.value.vault,
+      'search.rack': search.value.rack,
+      'search.is_expired': search.value.is_expired,
+      'search.status': search.value.status
     }
   })
 }
@@ -119,7 +132,11 @@ const onPageUpdate = async () => {
 onMounted(async () => {
   // set default value
   searchAll.value = route.query.search?.toString() ?? ''
+  search.value.code = route.query['search.code']?.toString() ?? ''
   search.value.name = route.query['search.name']?.toString() ?? ''
+  search.value.owner = route.query['search.owner']?.toString() ?? ''
+  search.value.vault = route.query['search.vault']?.toString() ?? ''
+  search.value.rack = route.query['search.rack']?.toString() ?? ''
   pagination.value.page = Number(route.query.page ?? 1)
   // call api
   const response = await getDocumentsApi.send(
@@ -147,12 +164,32 @@ const onDelete = async () => {
   documents.value = response?.data
   pagination.value = response?.pagination
 }
+
+const selectedExpiredDate = ref()
+watch(
+  selectedExpiredDate,
+  async () => {
+    // start loading
+    isLoading.value = true
+    // call api
+    console.log(selectedExpiredDate.value?._id)
+    if (selectedExpiredDate.value?._id === 'all') {
+      search.value.is_expired = ''
+    } else if (selectedExpiredDate.value?._id === 'expired') {
+      search.value.is_expired = 'expired'
+    } else if (selectedExpiredDate.value?._id === 'expired_7_days') {
+      search.value.is_expired = 'expired_within_7_days'
+    }
+    // finish loading
+    isLoading.value = false
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
   <base-card>
     <template #header>Documents</template>
-
     <div class="my-5 flex gap-2">
       <router-link to="/documents/create" v-if="authStore.role === 'admin'">
         <base-button color="info" shape="sharp">Create</base-button>
@@ -171,6 +208,32 @@ const onDelete = async () => {
             <th>Rack</th>
             <th>Expired Date</th>
             <th>Status</th>
+          </tr>
+          <tr class="bg-slate-50 dark:bg-slate-700">
+            <th></th>
+            <th class="basic-table-head">
+              <base-input required v-model="search.code" placeholder="Search" border="none" />
+            </th>
+            <th class="basic-table-head">
+              <base-input required v-model="search.name" placeholder="Search" border="none" />
+            </th>
+            <th class="basic-table-head">
+              <base-input required v-model="search.owner" placeholder="Search" border="none" />
+            </th>
+            <th class="basic-table-head">
+              <base-input required v-model="search.vault" placeholder="Search" border="none" />
+            </th>
+            <th class="basic-table-head">
+              <base-input required v-model="search.rack" placeholder="Search" border="none" />
+            </th>
+            <th>
+              <expired-choosen
+                v-model:selected="selectedExpiredDate"
+                border="none"
+                placeholder="Search"
+              />
+            </th>
+            <th></th>
           </tr>
         </thead>
         <tbody>

@@ -2,7 +2,12 @@ import axios from '@/axios'
 
 interface ISearch {
   all: string
+  code: string
   name: string
+  owner: string
+  vault: string
+  rack: string
+  is_expired: string
 }
 
 export function useGetDocumentsApi() {
@@ -12,7 +17,12 @@ export function useGetDocumentsApi() {
         params: {
           filter: {
             search: search.all,
-            name: search.name
+            code: search.code,
+            name: search.name,
+            owner: search.owner,
+            vault: search.vault,
+            rack: search.rack,
+            is_expired: search.is_expired
           },
           page: page
         }
