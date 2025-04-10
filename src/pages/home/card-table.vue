@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/auth.store'
 import CardBorrowApproval from './card-borrow-approval.vue'
 import CardBorrowHistory from './card-borrow-history.vue'
 import CardExpired from './card-expired.vue'
+import CardReturnApproval from './card-return-approval.vue'
 
 const authStore = useAuthStore()
 </script>
@@ -11,6 +12,7 @@ const authStore = useAuthStore()
 <template>
   <card-expired v-if="authStore.role === 'admin'" />
   <card-borrow-approval v-if="authStore.role === 'admin'" />
+  <card-return-approval v-if="authStore.role === 'admin'" />
   <card-borrow-history />
 </template>
 

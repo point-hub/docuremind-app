@@ -1,20 +1,22 @@
 <script setup lang="ts">
 import { watchDebounced } from '@vueuse/core'
+import { format as formatDate } from 'date-fns'
 import { inject, onMounted, type Ref, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import type { IToastRef } from '@/main-app.vue'
-import { useAuthStore } from '@/stores/auth.store'
 import { handleError } from '@/utils/api'
 
-import { useGetDocumentsApi } from './retrieve-borrow-history.api'
-import { useReturnDocumentApi } from './return.api'
+import { useGetDocumentsApi } from './retrieve-return-approval.api'
+import { useReturnApproveDocumentApi } from './return-approve.api'
+import { useReturnRejectDocumentApi } from './return-reject.api'
 
 const route = useRoute()
 const router = useRouter()
 const getDocumentsApi = useGetDocumentsApi()
-const returnDocumentApi = useReturnDocumentApi()
-const authStore = useAuthStore()
+
+const returnApproveDocumentApi = useReturnApproveDocumentApi()
+const returnRejectDocumentApi = useReturnRejectDocumentApi()
 
 interface IDocument {
   _id: string
@@ -45,7 +47,7 @@ interface IDocument {
   }
   required_date: string
   return_due_date: string
-  reason_for_borrowing: string
+  reason_for_returning: string
 }
 
 const searchAll = ref('')
@@ -143,17 +145,44 @@ onMounted(async () => {
   documents.value = response?.data
   pagination.value = response?.pagination
 })
+
 const toastRef = inject<Ref<IToastRef>>('toastRef')
-const onReturn = async (document: IDocument) => {
+const onApprove = async (return_id: string, document: IDocument) => {
   try {
-    const res = await returnDocumentApi.send(document.borrow._id)
+    const res = await returnApproveDocumentApi.send(document._id, return_id)
+    console.log('1111', res)
     if (res?.modified_count === 1) {
-      toastRef?.value.toast(
-        `Pengembalian dokumen "[${document.code}] ${document.name}" telah di proses`,
-        {
-          color: 'success'
-        }
+      toastRef?.value.toast(`Pengembalian dokumen "${document.name}" telah di terima`, {
+        color: 'success'
+      })
+      // call api
+      const response = await getDocumentsApi.send(
+        { all: searchAll.value, ...search.value },
+        pagination.value.page
       )
+      documents.value = response?.data
+      pagination.value = response?.pagination
+    }
+  } catch (error) {
+    const errorResponse = handleError(error)
+    if (errorResponse.message) {
+      toastRef?.value.toast(errorResponse.message, {
+        lists: errorResponse.lists,
+        color: 'danger'
+      })
+    }
+  } finally {
+    isLoading.value = false
+  }
+}
+const onReject = async (return_id: string, document: IDocument) => {
+  try {
+    console.log(document._id, return_id)
+    const res = await returnRejectDocumentApi.send(document._id, return_id)
+    if (res?.modified_count === 1) {
+      toastRef?.value.toast(`Pengembalian dokumen "${document.name}" tidak diterima`, {
+        color: 'danger'
+      })
       // call api
       const response = await getDocumentsApi.send(
         { all: searchAll.value, ...search.value },
@@ -176,7 +205,7 @@ const onReturn = async (document: IDocument) => {
 
 <template>
   <base-card>
-    <template #header>Borrowing History</template>
+    <template #header>Returning Approval</template>
     <div class="my-5 flex gap-2">
       <base-input v-model="searchAll" placeholder="Search..." border="full" class="w-full" />
     </div>
@@ -195,61 +224,41 @@ const onReturn = async (document: IDocument) => {
               <td>
                 <template class="flex flex-col gap-2">
                   <p>
-                    Permintaan pinjam dokumen
+                    Pengembalian dokumen
                     <b>
                       <router-link :to="`/documents/${document._id}`" class="text-blue">
                         [{{ document.code }}] {{ document.name }}
                       </router-link>
                     </b>
                     tanggal
-                    <b>{{ document.borrow.required_date }}</b>
-                    oleh <b>{{ document.borrow.requested_by.label }}</b> untuk
-                    <b>{{ document.borrow.reason_for_borrowing }}</b>
+                    <b>{{ formatDate(document.borrow.returning_at, 'yyyy-mm-dd') }}</b>
+                    oleh <b>{{ document.borrow.requested_by.label }}</b>
                   </p>
                 </template>
               </td>
-              <td class="w-1">
-                <base-button
-                  v-if="
-                    document.borrow.requested_by._id === authStore._id &&
-                    document.borrow.status === 'approved'
-                  "
-                  size="xs"
-                  variant="filled"
-                  color="primary"
-                  @click="onReturn(document)"
-                >
-                  Return
-                </base-button>
+              <td class="text-center w-1">
+                <base-badge v-if="document.status === 'available'" variant="light" color="primary">
+                  {{ document.status }}
+                </base-badge>
+                <base-badge v-if="document.status === 'returned'" variant="light" color="danger">
+                  {{ document.status }}
+                </base-badge>
               </td>
               <td class="w-1">
-                <base-badge
-                  v-if="document.borrow.status === 'returning'"
-                  variant="light"
-                  color="warning"
-                  >Returning</base-badge
-                >
-                <base-badge
-                  v-if="document.borrow.status === 'returned'"
-                  variant="light"
-                  color="success"
-                  >Returned</base-badge
-                >
-                <base-badge v-if="document.borrow.status === 'pending'" variant="light" color="info"
-                  >Pending</base-badge
-                >
-                <base-badge
-                  v-if="document.borrow.status === 'approved'"
-                  variant="light"
-                  color="success"
-                  >Approved</base-badge
-                >
-                <base-badge
-                  v-if="document.borrow.status === 'rejected'"
-                  variant="light"
-                  color="danger"
-                  >Rejected</base-badge
-                >
+                <span class="flex gap-1">
+                  <button
+                    class="text-white py-1 px-2 bg-blue-600 text-xs"
+                    @click="onApprove(document.borrow._id, document)"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    class="text-white py-1 px-2 bg-red-600 text-xs"
+                    @click="onReject(document.borrow._id, document)"
+                  >
+                    Reject
+                  </button>
+                </span>
               </td>
             </tr>
           </template>
