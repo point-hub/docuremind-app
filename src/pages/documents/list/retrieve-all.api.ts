@@ -8,6 +8,7 @@ interface ISearch {
   vault: string
   rack: string
   is_expired: string
+  status: string
 }
 
 export function useGetDocumentsApi() {
@@ -22,7 +23,8 @@ export function useGetDocumentsApi() {
             owner: search.owner,
             vault: search.vault,
             rack: search.rack,
-            is_expired: search.is_expired
+            is_expired: search.is_expired,
+            status: search.status
           },
           page: page
         }

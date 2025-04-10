@@ -7,6 +7,7 @@ import { useAuthStore } from '@/stores/auth.store'
 
 import DeleteModal from '../components/delete/delete-modal.vue'
 import ExpiredChoosen from '../components/expired-choosen/choosen.vue'
+import StatusChoosen from '../components/status-choosen/choosen.vue'
 import { useGetDocumentsApi } from './retrieve-all.api'
 
 const route = useRoute()
@@ -165,21 +166,29 @@ const onDelete = async () => {
   pagination.value = response?.pagination
 }
 
+const selectedStatus = ref()
 const selectedExpiredDate = ref()
+
 watch(
   selectedExpiredDate,
   async () => {
     // start loading
     isLoading.value = true
     // call api
-    console.log(selectedExpiredDate.value?._id)
-    if (selectedExpiredDate.value?._id === 'all') {
-      search.value.is_expired = ''
-    } else if (selectedExpiredDate.value?._id === 'expired') {
-      search.value.is_expired = 'expired'
-    } else if (selectedExpiredDate.value?._id === 'expired_7_days') {
-      search.value.is_expired = 'expired_within_7_days'
-    }
+    search.value.status = selectedExpiredDate.value?._id
+    // finish loading
+    isLoading.value = false
+  },
+  { immediate: true }
+)
+
+watch(
+  selectedStatus,
+  async () => {
+    // start loading
+    isLoading.value = true
+    // call api
+    search.value.status = selectedStatus.value?._id
     // finish loading
     isLoading.value = false
   },
@@ -226,14 +235,21 @@ watch(
             <th class="basic-table-head">
               <base-input required v-model="search.rack" placeholder="Search" border="none" />
             </th>
-            <th>
+            <th class="basic-table-head">
               <expired-choosen
                 v-model:selected="selectedExpiredDate"
                 border="none"
                 placeholder="Search"
               />
             </th>
-            <th></th>
+            <th class="basic-table-head">
+              <status-choosen
+                v-model:selected="selectedStatus"
+                border="none"
+                placeholder="Search"
+              />
+            </th>
+            <th class="basic-table-head"></th>
           </tr>
         </thead>
         <tbody>
