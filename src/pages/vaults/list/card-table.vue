@@ -170,26 +170,27 @@ const onDelete = async () => {
                     <base-icon class="text-xl" icon="i-ph-dots-three-bold"></base-icon>
                   </base-button>
                   <template #content>
-                    <base-card class="py-1! px-2! text-sm">
+                    <base-card class="p-0! gap-0!">
                       <div class="flex flex-col">
                         <router-link :to="`/vaults/${vault._id}`">
-                          <base-button variant="text" color="info">
-                            <div class="flex gap-2 w-full">
-                              <base-icon class="text-xl" icon="i-ph-eye"></base-icon>
-                              <p>View</p>
-                            </div>
+                          <base-button
+                            variant="text"
+                            color="info"
+                            class="w-full py-1! px-3! m-0! flex items-center justify-start text-left!"
+                          >
+                            <base-icon class="flex-0" icon="i-fad-file"></base-icon>
+                            <p class="flex-1">View</p>
                           </base-button>
                         </router-link>
-                        <base-divider orientation="vertical" class="my-1!"></base-divider>
+                        <base-divider orientation="vertical" class="my-0!"></base-divider>
                         <base-button
                           variant="text"
                           color="danger"
+                          class="w-full py-1! px-3! m-0! flex items-center justify-start text-left!"
                           @click="onDeleteModal(vault, index)"
                         >
-                          <div class="flex gap-2 w-full">
-                            <base-icon class="text-xl" icon="i-ph-trash"></base-icon>
-                            <p>Delete</p>
-                          </div>
+                          <base-icon class="flex-0" icon="i-fad-trash"></base-icon>
+                          <p class="flex-1">Delete</p>
                         </base-button>
                       </div>
                     </base-card>
