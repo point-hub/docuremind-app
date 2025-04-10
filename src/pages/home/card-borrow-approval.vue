@@ -35,7 +35,7 @@ interface IDocument {
     label: string
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  borrows: any[]
+  borrow: any
   issued_date: string
   expired_date: string
   status: string
@@ -249,13 +249,13 @@ const onReject = async (borrow_id: string, document: IDocument) => {
                 <span class="flex gap-1">
                   <button
                     class="text-white py-1 px-2 bg-blue-600 text-xs"
-                    @click="onApprove(borrow._id, document)"
+                    @click="onApprove(document.borrow._id, document)"
                   >
                     Approve
                   </button>
                   <button
                     class="text-white py-1 px-2 bg-red-600 text-xs"
-                    @click="onReject(borrow._id, document)"
+                    @click="onReject(document.borrow._id, document)"
                   >
                     Reject
                   </button>
