@@ -1,46 +1,54 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { inject, onMounted, reactive, type Ref } from 'vue'
 
-import type { IFormError } from './form'
+import type { IToastRef } from '@/main-app.vue'
+import { useAuthStore } from '@/stores/auth.store'
+import { handleError } from '@/utils/api'
 
-const username = defineModel<string>('username')
-const email = defineModel<string>('email')
-const name = defineModel<string>('name')
-const role = defineModel<string>('role')
-const errors = defineModel<IFormError>('errors')
+import { useForm } from './form'
+import { useGetUserApi } from './retrieve.api'
+import { useUpdateUserApi } from './update.api'
 
-interface IOption {
-  _id: string
-  label: string
+const formId = defineModel<string>('form-id')
+
+const getUserApi = useGetUserApi()
+const authStore = useAuthStore()
+
+const updateUserApi = useUpdateUserApi()
+const toastRef = inject<Ref<IToastRef>>('toastRef')
+const form = reactive(useForm())
+
+onMounted(async () => {
+  const response = await getUserApi.send(authStore._id)
+
+  if (response) {
+    formId.value = response._id
+    form.data.username = response.username
+    form.data.email = response.email
+    form.data.name = response.name
+    form.data.role = response.role
+  }
+})
+
+const onUpdate = async () => {
+  try {
+    const response = await updateUserApi.send(formId.value ?? '', form.data, form.errors)
+    if (response?.modified_count === 1) {
+      toastRef?.value.toast('Update success', { color: 'success' })
+    }
+  } catch (error) {
+    const errorResponse = handleError(error)
+    if (errorResponse.errors) {
+      form.errors.name = errorResponse.errors.name || []
+    }
+    if (errorResponse.message) {
+      toastRef?.value.toast(errorResponse.message, {
+        lists: errorResponse.lists,
+        color: 'danger'
+      })
+    }
+  }
 }
-
-const roleOptions: IOption[] = [
-  {
-    _id: 'admin',
-    label: 'Admin'
-  },
-  {
-    _id: 'user',
-    label: 'User'
-  }
-]
-
-const roleSelected = ref<IOption>()
-
-watch(
-  () => role.value,
-  () => {
-    roleSelected.value = roleOptions.find((option) => option._id === role.value)
-  }
-)
-
-watch(
-  () => roleSelected.value,
-  () => {
-    role.value = roleSelected.value?._id ?? ''
-  },
-  { immediate: true, deep: true }
-)
 </script>
 
 <template>
@@ -48,19 +56,28 @@ watch(
     <template #header>Profile</template>
 
     <div class="flex flex-col gap-4 mt-5">
-      <base-input required v-model="username" label="Username" :errors="errors?.username" />
-      <base-input required disabled v-model="email" label="Email" :errors="errors?.email" />
-      <base-input required disabled v-model="name" label="Name" :errors="errors?.name" />
-      <base-autocomplete
-        label="Role"
-        disabled
+      <base-input
         required
-        v-model="roleSelected"
-        :options="roleOptions"
-        :errors="errors?.role"
+        v-model="form.data.username"
+        label="Username"
+        :errors="form.errors?.username"
+      />
+      <base-input
+        required
+        disabled
+        v-model="form.data.email"
+        label="Email"
+        :errors="form.errors?.email"
+      />
+      <base-input
+        required
+        disabled
+        v-model="form.data.name"
+        label="Name"
+        :errors="form.errors?.name"
       />
       <div class="flex gap-2">
-        <base-button size="xs" color="primary">Update</base-button>
+        <base-button size="xs" color="primary" @click="onUpdate">Update</base-button>
       </div>
     </div>
   </base-card>
