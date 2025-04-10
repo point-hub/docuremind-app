@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import { watchDebounced } from '@vueuse/core'
-import { onMounted, ref } from 'vue'
+import { inject, onMounted, type Ref, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import type { IToastRef } from '@/main-app.vue'
+import { useAuthStore } from '@/stores/auth.store'
+import { handleError } from '@/utils/api'
+
 import { useGetDocumentsApi } from './retrieve-borrow-history.api'
+import { useReturnDocumentApi } from './return.api'
 
 const route = useRoute()
 const router = useRouter()
 const getDocumentsApi = useGetDocumentsApi()
+const returnDocumentApi = useReturnDocumentApi()
+const authStore = useAuthStore()
 
 interface IDocument {
   _id: string
@@ -27,7 +34,7 @@ interface IDocument {
     label: string
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  borrows: any[]
+  borrow: any
   issued_date: string
   expired_date: string
   status: string
@@ -136,12 +143,37 @@ onMounted(async () => {
   documents.value = response?.data
   pagination.value = response?.pagination
 })
+const toastRef = inject<Ref<IToastRef>>('toastRef')
+const onReturn = async (borrow_id: string) => {
+  try {
+    const res = await returnDocumentApi.send(borrow_id)
+    if (res?.modified_count === 1) {
+      toastRef?.value.toast(`Pengembalian dokumen "${borrow_id}" telah di proses`, {
+        color: 'success'
+      })
+      // call api
+      const response = await getDocumentsApi.send(
+        { all: searchAll.value, ...search.value },
+        pagination.value.page
+      )
+      documents.value = response?.data
+      pagination.value = response?.pagination
+    }
+  } catch (error) {
+    const errorResponse = handleError(error)
+    if (errorResponse.message) {
+      toastRef?.value.toast(errorResponse.message, {
+        lists: errorResponse.lists,
+        color: 'danger'
+      })
+    }
+  }
+}
 </script>
 
 <template>
   <base-card>
     <template #header>Borrowing History</template>
-
     <div class="my-5 flex gap-2">
       <base-input v-model="searchAll" placeholder="Search..." border="full" class="w-full" />
     </div>
@@ -156,37 +188,61 @@ onMounted(async () => {
             </td>
           </tr>
           <template v-if="!isLoading">
-            <template v-for="(document, index) in documents" :key="index">
-              <tr v-for="(borrow, index) in document.borrows" :key="index">
-                <td>
-                  <template class="flex flex-col gap-2">
-                    <p>
-                      Permintaan pinjam dokumen
-                      <b>
-                        <router-link :to="`/documents/${document._id}`" class="text-blue">
-                          [{{ document.code }}] {{ document.name }}
-                        </router-link>
-                      </b>
-                      tanggal
-                      <b>{{ borrow.required_date }}</b>
-                      oleh <b>{{ borrow.requested_by.label }}</b> untuk
-                      <b>{{ borrow.reason_for_borrowing }}</b>
-                    </p>
-                  </template>
-                </td>
-                <td class="w-1">
-                  <base-badge v-if="borrow.status === 'pending'" variant="light" color="info"
-                    >Pending</base-badge
-                  >
-                  <base-badge v-if="borrow.status === 'approved'" variant="light" color="success"
-                    >Approved</base-badge
-                  >
-                  <base-badge v-if="borrow.status === 'rejected'" variant="light" color="danger"
-                    >Rejected</base-badge
-                  >
-                </td>
-              </tr>
-            </template>
+            <tr v-for="(document, index) in documents" :key="index">
+              <td>
+                <template class="flex flex-col gap-2">
+                  <p>
+                    Permintaan pinjam dokumen
+                    <b>
+                      <router-link :to="`/documents/${document._id}`" class="text-blue">
+                        [{{ document.code }}] {{ document.name }}
+                      </router-link>
+                    </b>
+                    tanggal
+                    <b>{{ document.borrow.required_date }}</b>
+                    oleh <b>{{ document.borrow.requested_by.label }}</b> untuk
+                    <b>{{ document.borrow.reason_for_borrowing }}</b>
+                  </p>
+                </template>
+              </td>
+              <td class="w-1">
+                <base-button
+                  v-if="
+                    document.borrow.requested_by._id === authStore._id &&
+                    document.borrow.status === 'approved'
+                  "
+                  size="xs"
+                  variant="filled"
+                  color="primary"
+                  @click="onReturn(document.borrow._id)"
+                >
+                  Return
+                </base-button>
+              </td>
+              <td class="w-1">
+                <base-badge
+                  v-if="document.borrow.status === 'returning'"
+                  variant="light"
+                  color="warning"
+                  >Returning</base-badge
+                >
+                <base-badge v-if="document.borrow.status === 'pending'" variant="light" color="info"
+                  >Pending</base-badge
+                >
+                <base-badge
+                  v-if="document.borrow.status === 'approved'"
+                  variant="light"
+                  color="success"
+                  >Approved</base-badge
+                >
+                <base-badge
+                  v-if="document.borrow.status === 'rejected'"
+                  variant="light"
+                  color="danger"
+                  >Rejected</base-badge
+                >
+              </td>
+            </tr>
           </template>
         </tbody>
       </base-table>

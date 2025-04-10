@@ -204,7 +204,7 @@ const onReject = async (borrow_id: string, document: IDocument) => {
 
 <template>
   <base-card>
-    <template #header>Request for borrowing the Document</template>
+    <template #header>Borrowing Approval</template>
 
     <div class="my-5 flex gap-2">
       <base-input v-model="searchAll" placeholder="Search..." border="full" class="w-full" />
@@ -220,54 +220,48 @@ const onReject = async (borrow_id: string, document: IDocument) => {
             </td>
           </tr>
           <template v-if="!isLoading">
-            <template v-for="(document, index) in documents" :key="index">
-              <tr v-for="(borrow, index) in document.borrows" :key="index">
-                <td>
-                  <template class="flex flex-col gap-2">
-                    <p>
-                      Permintaan pinjam dokumen
-                      <b>
-                        <router-link :to="`/documents/${document._id}`" class="text-blue">
-                          [{{ document.code }}] {{ document.name }}
-                        </router-link>
-                      </b>
-                      tanggal
-                      <b>{{ borrow.required_date }}</b>
-                      oleh <b>{{ borrow.requested_by.label }}</b> untuk
-                      <b>{{ borrow.reason_for_borrowing }}</b>
-                    </p>
-                  </template>
-                </td>
-                <td class="text-center w-1">
-                  <base-badge
-                    v-if="document.status === 'available'"
-                    variant="light"
-                    color="primary"
+            <tr v-for="(document, index) in documents" :key="index">
+              <td>
+                <template class="flex flex-col gap-2">
+                  <p>
+                    Permintaan pinjam dokumen
+                    <b>
+                      <router-link :to="`/documents/${document._id}`" class="text-blue">
+                        [{{ document.code }}] {{ document.name }}
+                      </router-link>
+                    </b>
+                    tanggal
+                    <b>{{ document.borrow.required_date }}</b>
+                    oleh <b>{{ document.borrow.requested_by.label }}</b> untuk
+                    <b>{{ document.borrow.reason_for_borrowing }}</b>
+                  </p>
+                </template>
+              </td>
+              <td class="text-center w-1">
+                <base-badge v-if="document.status === 'available'" variant="light" color="primary">
+                  {{ document.status }}
+                </base-badge>
+                <base-badge v-if="document.status === 'borrowed'" variant="light" color="danger">
+                  {{ document.status }}
+                </base-badge>
+              </td>
+              <td class="w-1">
+                <span class="flex gap-1">
+                  <button
+                    class="text-white py-1 px-2 bg-blue-600 text-xs"
+                    @click="onApprove(borrow._id, document)"
                   >
-                    {{ document.status }}
-                  </base-badge>
-                  <base-badge v-if="document.status === 'borrowed'" variant="light" color="danger">
-                    {{ document.status }}
-                  </base-badge>
-                </td>
-                <td class="w-1">
-                  <span class="flex gap-1">
-                    <button
-                      class="text-white py-1 px-2 bg-blue-600 text-xs"
-                      @click="onApprove(borrow._id, document)"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      class="text-white py-1 px-2 bg-red-600 text-xs"
-                      @click="onReject(borrow._id, document)"
-                    >
-                      Reject
-                    </button>
-                  </span>
-                </td>
-              </tr>
-            </template>
+                    Approve
+                  </button>
+                  <button
+                    class="text-white py-1 px-2 bg-red-600 text-xs"
+                    @click="onReject(borrow._id, document)"
+                  >
+                    Reject
+                  </button>
+                </span>
+              </td>
+            </tr>
           </template>
         </tbody>
       </base-table>
