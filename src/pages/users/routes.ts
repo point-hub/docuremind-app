@@ -20,6 +20,11 @@ export default {
       path: ':id/edit',
       component: () => import('@/pages/users/edit/index.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: ':id/profile',
+      component: () => import('@/pages/users/profile/index.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 }

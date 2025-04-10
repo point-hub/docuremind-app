@@ -162,12 +162,10 @@ const onUploadFile = (e: HTMLInputEvent) => {
       <base-datepicker label="Expired Date" v-model="expired_date" />
       <base-textarea label="Notes" v-model="notes" minHeight="120" />
 
-      <base-file-upload
-        label="Document File"
-        @change="onUploadFile"
-        accept="application/pdf, image/*"
-        multiple
-      />
+      <div>
+        <div class="text-sm font-semibold text-gray-500 mb-2">Document File</div>
+        <base-file-upload @change="onUploadFile" accept="application/pdf, image/*" multiple />
+      </div>
     </div>
   </base-card>
 </template>

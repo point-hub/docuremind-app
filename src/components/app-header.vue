@@ -52,11 +52,12 @@ const onSignout = () => {
           </button>
           <template #content>
             <div class="popper-root p-2">
-              <!-- <base-button
+              <router-link
+                to="/users/profile"
                 variant="text"
                 color="primary"
                 size="sm"
-                class="text-slate-900 dark:text-slate-50 flex justify-left!"
+                class="text-slate-900 dark:text-slate-50 flex justify-left! gap-2"
               >
                 <base-avatar
                   size="xs"
@@ -65,11 +66,11 @@ const onSignout = () => {
                   name="John Doe"
                 />
                 <div class="flex flex-col justify-center items-start text-left text-sm">
-                  <p class="font-semibold line-clamp-2">Organization Name</p>
-                  <p class="line-clamp-2">Username</p>
+                  <p class="font-semibold line-clamp-2">DocuRemind</p>
+                  <p class="line-clamp-2">{{ authStore.name }}</p>
                 </div>
-              </base-button>
-              <base-divider orientation="vertical" /> -->
+              </router-link>
+              <base-divider orientation="vertical" />
 
               <base-button
                 variant="text"

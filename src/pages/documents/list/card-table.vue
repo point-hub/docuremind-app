@@ -175,7 +175,7 @@ watch(
     // start loading
     isLoading.value = true
     // call api
-    search.value.status = selectedExpiredDate.value?._id
+    search.value.is_expired = selectedExpiredDate.value?._id
     // finish loading
     isLoading.value = false
   },
