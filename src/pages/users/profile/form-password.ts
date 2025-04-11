@@ -31,10 +31,12 @@ export function useForm() {
   }
 
   const isPasswordConfirmed = computed(() => {
+    confirmPasswordValidation()
     return (
       data.value.password.length > 0 &&
       data.value.confirm_password.length > 0 &&
-      errors.value.password.length === 0
+      errors.value.password.length === 0 &&
+      errors.value.confirm_password.length === 0
     )
   })
 

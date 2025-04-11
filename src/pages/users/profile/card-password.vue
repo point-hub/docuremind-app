@@ -20,7 +20,9 @@ const onUpdate = async () => {
   if ((form.errors.value.password?.length ?? 0) > 0) {
     return toastRef?.value.toast('Please use strong password', { color: 'danger' })
   }
-  if (!form.isPasswordConfirmed) {
+  if (form.data.value.password !== form.data.value.confirm_password) {
+    form.errors.value.confirm_password = []
+    form.errors.value.confirm_password.push('Password do not match')
     return toastRef?.value.toast('Password confirmation not match', { color: 'danger' })
   }
 
