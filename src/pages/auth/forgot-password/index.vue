@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { inject, type Ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import type { IToastRef } from '@/main-app.vue'
 import { handleError } from '@/utils/api'
@@ -9,7 +8,6 @@ import { requestPasswordApiRequest } from './api/request-password.api'
 import { useForm } from './form'
 
 const form = useForm()
-const router = useRouter()
 const toastRef = inject<Ref<IToastRef>>('toastRef')
 
 const onSubmit = async () => {
@@ -20,6 +18,7 @@ const onSubmit = async () => {
         timer: 5000,
         color: 'success'
       })
+      form.data.value.email = ''
     }
   } catch (error) {
     const errorResponse = handleError(error)
