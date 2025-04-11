@@ -38,9 +38,7 @@ onMounted(async () => {
     <card-form
       :form-id="route.params.id.toString()"
       :cover_url="form.data.cover_url"
-      :document="form.data.document"
-      :document_url="form.data.document_url"
-      :document_mime="form.data.document_mime"
+      :document_files="form.data.document_files"
       :code="form.data.code"
       :name="form.data.name"
       :type="form.data.type"

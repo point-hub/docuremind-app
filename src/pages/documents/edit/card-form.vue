@@ -7,9 +7,10 @@ import { useGetVaultsApi } from './retrieve-all-vault.api'
 
 const cover = defineModel('cover')
 const cover_url = defineModel<string>('cover_url')
-const document = defineModel('document')
-const document_mime = defineModel<string>('document_mime')
-const document_url = defineModel<string>('document_url')
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const document_files = defineModel<any[]>('document_files', { default: [] })
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const new_files = defineModel<any[]>('new_files', { default: [] })
 const code = defineModel<string>('code')
 const name = defineModel<string>('name')
 const type = defineModel<string>('type')
@@ -127,9 +128,35 @@ const onUpload = (e: HTMLInputEvent) => {
   }
 }
 
-const onUploadFile = (e: HTMLInputEvent) => {
+const onUploadFile = (i: number, e: HTMLInputEvent) => {
   if (e.target.files && e.target.files[0]) {
-    document.value = e.target.files[0]
+    new_files.value = [...new_files.value, e.target.files[0]]
+    previewImage(i, e)
+  }
+}
+
+const onRemoveFile = (i: number) => {
+  document_files.value.splice(i, 1)
+}
+
+const onRemoveNewFile = (i: number) => {
+  imageUrl.value.splice(i, 1)
+  new_files.value.splice(i, 1)
+}
+
+const imageUrl = ref<string[]>([])
+const previewImage = (i: number, event: Event) => {
+  console.log(i)
+  const target = event.target as HTMLInputElement
+  if (!target.files || target.files.length === 0) return
+
+  const file = target.files[0]
+  if (file) {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      imageUrl.value[i] = e.target?.result as string
+    }
+    reader.readAsDataURL(file)
   }
 }
 </script>
@@ -179,25 +206,92 @@ const onUploadFile = (e: HTMLInputEvent) => {
       <base-datepicker label="Issued Date" v-model="issued_date" />
       <base-datepicker label="Expired Date" v-model="expired_date" />
       <base-textarea label="Notes" v-model="notes" minHeight="120" />
-      <base-form label="Document File">
-        <div class="flex flex-col gap-4">
-          <base-file-upload @change="onUploadFile" accept="application/pdf, image/*" />
-          <a
-            v-if="document_url && document_mime?.includes('image')"
-            :href="document_url"
-            target="_blank"
+    </div>
+  </base-card>
+  <base-card>
+    <template #header>Document Files</template>
+    <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+      <div
+        border="none"
+        class="bg-slate-200 col-span-1"
+        v-for="(documentFile, index) in document_files"
+        :key="index"
+      >
+        <div class="relative w-full">
+          <base-button size="sm" class="w-full">
+            <div
+              class="text-sm font-semibold text-gray-500 flex-1 h-60 flex flex-col items-center justify-center w-full bg-slate-200"
+            >
+              <a
+                v-if="documentFile.url && documentFile.mime?.includes('image')"
+                :href="documentFile.url"
+                target="_blank"
+              >
+                <img :src="documentFile.url" class="max-w-48 max-h-60 w-full" />
+              </a>
+              <a
+                v-else-if="documentFile.url && documentFile.mime?.includes('pdf')"
+                :href="documentFile.url"
+                target="_blank"
+              >
+                <base-icon icon="i-fas-file-pdf" class="w-100px h-100px" />
+              </a>
+            </div>
+          </base-button>
+          <base-button
+            v-if="index !== document_files.length"
+            type="button"
+            size="xs"
+            class="absolute right-2 top-2 rounded-full border-white bg-white px-2.5 py-1 opacity-50 shadow"
+            @click="onRemoveFile(index)"
           >
-            <img :src="document_url" alt="" class="md:w-320px" />
-          </a>
-          <a
-            v-else-if="document_url && document_mime?.includes('pdf')"
-            :href="document_url"
-            target="_blank"
-          >
-            <base-icon icon="i-fas-file-pdf" class="w-100px h-100px" />
-          </a>
+            X
+          </base-button>
         </div>
-      </base-form>
+      </div>
+      <base-file-upload
+        v-for="(i, index) in imageUrl.length + 1"
+        :key="i"
+        @change="onUploadFile(index, $event)"
+        border="none"
+        accept="application/pdf, image/*"
+        class="bg-slate-200 col-span-1"
+      >
+        <template v-slot="{ fileRef }">
+          <div class="relative w-full">
+            <base-button size="sm" @click="fileRef.click()" class="w-full">
+              <div
+                class="text-sm font-semibold text-gray-500 flex-1 h-60 flex flex-col items-center justify-center w-full bg-slate-200"
+              >
+                <img
+                  v-if="imageUrl[index] && new_files[index].type.includes('image')"
+                  :src="imageUrl[index]"
+                  class="max-w-48 max-h-60 w-full"
+                />
+                <div v-if="imageUrl[index] && new_files[index].type.includes('pdf')">
+                  <base-icon icon="i-fas-file-pdf" class="w-100px h-100px" />
+                </div>
+                <div
+                  v-if="!imageUrl[index]"
+                  class="flex flex-col gap-2 items-center justify-center w-full h-full"
+                >
+                  <base-icon icon="i-fad-file-import" class="w-12 h-12"></base-icon>
+                  <div>Choose File</div>
+                </div>
+              </div>
+            </base-button>
+            <base-button
+              v-if="index !== imageUrl.length"
+              type="button"
+              size="xs"
+              class="absolute right-2 top-2 rounded-full border-white bg-white px-2.5 py-1 opacity-50 shadow"
+              @click="onRemoveNewFile(index)"
+            >
+              X
+            </base-button>
+          </div>
+        </template>
+      </base-file-upload>
     </div>
   </base-card>
 </template>

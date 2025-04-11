@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const cover_url = defineModel<string>('cover_url')
-const document_url = defineModel<string>('document_url')
-const document_mime = defineModel<string>('document_mime')
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const document_files = defineModel<any[]>('document_files', { default: [] })
 const code = defineModel<string>('code')
 const name = defineModel<string>('name')
 const type = defineModel<string>('type')
@@ -32,22 +32,42 @@ const status = defineModel<string>('status')
       <base-textarea disabled v-model="notes" label="Notes" />
       <base-datepicker disabled v-model="issued_date" label="Issued Date" />
       <base-datepicker disabled v-model="expired_date" label="Expired Date" />
-      <base-form label="Document File">
-        <a
-          v-if="document_url && document_mime?.includes('image')"
-          :href="document_url"
-          target="_blank"
-        >
-          <img :src="document_url" alt="" class="md:w-320px" />
-        </a>
-        <a
-          v-else-if="document_url && document_mime?.includes('pdf')"
-          :href="document_url"
-          target="_blank"
-        >
-          <base-icon icon="i-fas-file-pdf" class="w-100px h-100px" />
-        </a>
-      </base-form>
+    </div>
+  </base-card>
+
+  <base-card>
+    <template #header>Document Files</template>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+      <div
+        border="none"
+        class="bg-slate-200 col-span-1"
+        v-for="(documentFile, index) in document_files"
+        :key="index"
+      >
+        <div class="relative w-full">
+          <base-button size="sm" class="w-full">
+            <div
+              class="text-sm font-semibold text-gray-500 flex-1 h-60 flex flex-col items-center justify-center w-full bg-slate-200"
+            >
+              <a
+                v-if="documentFile.url && documentFile.mime?.includes('image')"
+                :href="documentFile.url"
+                target="_blank"
+              >
+                <img :src="documentFile.url" class="max-w-48 max-h-60 w-full" />
+              </a>
+              <a
+                v-else-if="documentFile.url && documentFile.mime?.includes('pdf')"
+                :href="documentFile.url"
+                target="_blank"
+              >
+                <base-icon icon="i-fas-file-pdf" class="w-100px h-100px" />
+              </a>
+            </div>
+          </base-button>
+        </div>
+      </div>
     </div>
   </base-card>
 </template>

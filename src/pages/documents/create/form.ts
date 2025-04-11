@@ -10,19 +10,9 @@ export interface IFormError {
 }
 
 export function useForm() {
-  const defaultForm: IForm = {
-    code: '',
-    name: '',
-    type: '',
-    notes: ''
-  }
+  const defaultForm: IForm = {}
 
-  const defaultFormError: IFormError = {
-    code: [],
-    name: [],
-    type: [],
-    notes: []
-  }
+  const defaultFormError: IFormError = {}
 
   const data = ref<IForm>(defaultForm)
 

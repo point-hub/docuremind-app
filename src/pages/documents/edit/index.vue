@@ -71,12 +71,10 @@ const onUpdate = async () => {
     <card-breadcrumbs />
 
     <card-form
-      :form-id="route.params.id.toString()"
       v-model:cover="form.data.cover"
       v-model:cover_url="form.data.cover_url"
-      v-model:document="form.data.document"
-      v-model:document_mime="form.data.document_mime"
-      v-model:document_url="form.data.document_url"
+      v-model:document_files="form.data.document_files"
+      v-model:new_files="form.data.new_files"
       v-model:code="form.data.code"
       v-model:name="form.data.name"
       v-model:type="form.data.type"

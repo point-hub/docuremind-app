@@ -38,6 +38,8 @@ const onSave = async () => {
       form.errors.vault = errorResponse.errors.vault || []
       form.errors.owner = errorResponse.errors.owner || []
       form.errors.rack = errorResponse.errors.rack || []
+      form.errors.cover = errorResponse.errors.cover || []
+      form.errors.files = errorResponse.errors.files || []
     }
     if (errorResponse.message) {
       toastRef?.value.toast(errorResponse.message, {
@@ -59,7 +61,6 @@ const onSave = async () => {
 
     <card-form
       v-model:cover="form.data.cover"
-      v-model:document="form.data.document"
       v-model:code="form.data.code"
       v-model:name="form.data.name"
       v-model:type="form.data.type"
@@ -69,6 +70,7 @@ const onSave = async () => {
       v-model:issued_date="form.data.issued_date"
       v-model:expired_date="form.data.expired_date"
       v-model:notes="form.data.notes"
+      v-model:document_files="form.data.document_files"
       :errors="form.errors"
     />
 
