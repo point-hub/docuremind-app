@@ -23,7 +23,7 @@ export default {
       component: () => import('@/pages/auth/forgot-password/index.vue')
     },
     {
-      path: 'reset-password',
+      path: 'reset-password/:code',
       component: () => import('@/pages/auth/reset-password/index.vue')
     }
   ]

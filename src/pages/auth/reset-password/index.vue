@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import { BaseButton, BaseCard, BaseCheckbox, BaseInput } from '@point-hub/papp'
-import { ref } from 'vue'
+import { BaseButton, BaseCard, BaseInput } from '@point-hub/papp'
+import { inject, type Ref, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
+import type { IToastRef } from '@/main-app.vue'
+import { handleError } from '@/utils/api'
+
+import { resetPasswordApiRequest } from './reset-password.api'
+const router = useRouter()
 const form = ref({
-  email: '',
-  username: '',
   password: '',
-  confirmPassword: '',
-  accept: false
+  confirm_password: ''
 })
-
+const errors = ref<{ password: string[]; confirm_password: string[] }>({
+  password: [],
+  confirm_password: []
+})
+const route = useRoute()
 const passwordType = ref<'text' | 'password'>('password')
 
 const toggleRevealPassword = () => {
@@ -19,19 +26,55 @@ const toggleRevealPassword = () => {
     passwordType.value = 'password'
   }
 }
+const toastRef = inject<Ref<IToastRef>>('toastRef')
+const onSubmit = async () => {
+  if (form.value.password.length < 8) {
+    errors.value.password = []
+    errors.value.password.push('Use at least 8 characters')
+    return toastRef?.value.toast('Use at least 8 characters', { color: 'danger' })
+  }
+  if (form.value.password !== form.value.confirm_password) {
+    errors.value.confirm_password = []
+    errors.value.confirm_password.push('Password do not match')
+    return toastRef?.value.toast('Password confirmation not match', { color: 'danger' })
+  }
+
+  try {
+    await resetPasswordApiRequest({
+      code: route.params.code as string,
+      password: form.value.password
+    })
+    toastRef?.value.toast('Reset password success', {
+      color: 'success',
+      timer: 5000
+    })
+    router.push('/signin')
+  } catch (error) {
+    const errorResponse = handleError(error)
+    if (errorResponse.errors) {
+      errors.value.password = errorResponse.errors.password || []
+    }
+    if (errorResponse.message) {
+      toastRef?.value.toast(errorResponse.message, {
+        lists: errorResponse.lists,
+        color: 'danger',
+        timer: 5000
+      })
+    }
+  }
+}
 </script>
 
 <template>
   <component :is="BaseCard" class="max-w-xl">
     <form @submit.prevent="" class="flex flex-col gap-8">
       <div class="flex flex-col gap-4">
-        <component :is="BaseInput" v-model="form.email" label="Email" layout="vertical" autofocus />
-        <component :is="BaseInput" v-model="form.username" label="Username" layout="vertical" />
         <component
           :is="BaseInput"
           :type="passwordType"
+          :errors="errors.password"
           v-model="form.password"
-          label="Password"
+          label="New Password"
           layout="vertical"
         >
           <template #suffix>
@@ -43,7 +86,8 @@ const toggleRevealPassword = () => {
         <component
           :is="BaseInput"
           :type="passwordType"
-          v-model="form.confirmPassword"
+          :errors="errors.confirm_password"
+          v-model="form.confirm_password"
           label="Confirm Password"
           layout="vertical"
         >
@@ -53,16 +97,10 @@ const toggleRevealPassword = () => {
             </BaseButton>
           </template>
         </component>
-        <div class="flex items-center">
-          <component :is="BaseCheckbox" v-model="form.accept" />
-          <p>Accept <a href="#">Privacy</a> & <a href="#">Terms</a></p>
-        </div>
       </div>
-      <component :is="BaseButton" color="primary">Sign Up</component>
+      <component :is="BaseButton" @click="onSubmit" color="primary">Reset Password</component>
     </form>
-    <div class="mt-4">
-      Already have an account ? <router-link to="/signin">Sign In</router-link>
-    </div>
+    <div class="mt-4">Remember your password? <router-link to="/signin">Sign In</router-link></div>
   </component>
 </template>
 

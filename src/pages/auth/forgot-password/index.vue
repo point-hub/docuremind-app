@@ -16,7 +16,10 @@ const onSubmit = async () => {
   try {
     const response = await requestPasswordApiRequest(form.data.value.email)
     if (response.status === 200) {
-      router.push('/')
+      toastRef?.value.toast('Success request password, please check your email', {
+        timer: 5000,
+        color: 'success'
+      })
     }
   } catch (error) {
     const errorResponse = handleError(error)

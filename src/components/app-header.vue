@@ -14,8 +14,8 @@ const accountPopoverRef = ref()
 const authStore = useAuthStore()
 
 const onSignout = () => {
+  VueCookie.remove('POINTHUB_ACCESS')
   router.push('/signin')
-  VueCookie.remove('POINTHUB_ACCESS_TOKEN')
 }
 </script>
 
