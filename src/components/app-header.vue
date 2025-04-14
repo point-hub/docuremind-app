@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useDarkMode, useSidebarStore } from '@point-hub/papp'
-import VueCookie from '@point-hub/vue-cookie'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { useAuthStore } from '@/stores/auth.store'
+import { apiRequest } from '@/utils/api'
 
 const { isDarkMode, toggleDarkMode } = useDarkMode()
 const sidebarStore = useSidebarStore()
@@ -13,8 +13,8 @@ const router = useRouter()
 const accountPopoverRef = ref()
 const authStore = useAuthStore()
 
-const onSignout = () => {
-  VueCookie.remove('POINTHUB_ACCESS')
+const onSignout = async () => {
+  await apiRequest.post('/v1/auth/signout', {})
   router.push('/signin')
 }
 </script>
