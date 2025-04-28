@@ -54,7 +54,6 @@ const onSubmit = async () => {
       <div class="flex flex-col gap-4">
         <div class="-mt-4">
           <h3 class="font-semibold">Sign in with Pointhub</h3>
-          to continue to <a href="#" target="_blank" class="text-blue-600">DocuRemind</a>
         </div>
 
         <div class="flex flex-col gap-4">
