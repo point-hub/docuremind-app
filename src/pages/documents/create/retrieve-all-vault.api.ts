@@ -14,7 +14,8 @@ export function useGetVaultsApi() {
             search: search.all,
             name: search.name
           },
-          page: page
+          page: page,
+          page_size: 99999,
         }
       })
 
