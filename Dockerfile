@@ -17,7 +17,7 @@ ARG VITE_API_TIMEOUT
 ENV VITE_API_TIMEOUT $VITE_API_TIMEOUT
 
 # install dependencies
-COPY --chown=node:node package.json bun.lockb ./
+COPY --chown=node:node package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 # copy source code
