@@ -29,7 +29,7 @@ const status = defineModel<string>('status')
       <base-input disabled v-model="vault" label="Vault" />
       <base-input disabled v-model="rack" label="Rack" />
       <base-input disabled v-model="status" label="Status" />
-      <base-textarea disabled v-model="notes" label="Notes" />
+      <base-textarea disabled v-model="notes" label="Notes" :minHeight="128" />
       <base-datepicker disabled v-model="issued_date" label="Issued Date" />
       <base-datepicker disabled v-model="expired_date" label="Expired Date" />
     </div>

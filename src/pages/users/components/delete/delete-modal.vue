@@ -72,9 +72,8 @@ defineExpose({
 </script>
 
 <template>
-  <base-modal :is-open="showModal" @on-close="toggleModal(false)">
+  <base-modal title="Delete User" :is-open="showModal" @on-close="toggleModal(false)">
     <div class="max-h-90vh overflow-auto p-4">
-      <h2 class="py-4 text-2xl font-bold">Delete User</h2>
       <div class="space-y-8">
         <p>Are you sure want to delete?</p>
         <div class="flex gap-2">

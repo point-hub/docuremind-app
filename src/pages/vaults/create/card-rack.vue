@@ -126,9 +126,8 @@ const checkNameUnique = (value: string) => {
     </div>
   </base-card>
 
-  <base-modal :is-open="showModal" @on-close="showModal = false">
+  <base-modal title="Rack" :is-open="showModal" @on-close="showModal = false">
     <div class="max-h-90vh overflow-auto p-4">
-      <h2 class="py-4 text-2xl font-bold">Rack</h2>
       <div class="space-y-8">
         <base-input required v-model="code" label="Code" :errors="errors?.code" />
         <base-input required v-model="name" label="Name" :errors="errors?.name" />
