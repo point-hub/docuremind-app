@@ -147,39 +147,14 @@ const previewImage = (i: number, event: Event) => {
       <base-file-upload label="Cover" @change="onUpload" accept="image/*" :errors="errors?.cover" />
       <base-input required v-model="code" label="Code" :errors="errors?.code" />
       <base-input required v-model="name" label="Name" :errors="errors?.name" />
-      <base-autocomplete
-        required
-        v-model="selectedType"
-        :options="optionsType"
-        label="Type"
-        layout="vertical"
-        :errors="errors?.type"
-      />
-      <base-autocomplete
-        required
-        v-model="selectedOwner"
-        :options="owners?.data"
-        label="Owner"
-        layout="vertical"
-        :errors="errors?.owner"
-      />
-      <base-autocomplete
-        required
-        v-model="selectedVault"
-        :options="vaults?.data"
-        label="Vault"
-        layout="vertical"
-        :errors="errors?.vault"
-      />
-      <base-autocomplete
-        v-if="selectedVault"
-        required
-        v-model="selectedRack"
-        :options="optionsRack"
-        label="Rack"
-        layout="vertical"
-        :errors="errors?.rack"
-      />
+      <base-select required v-model="selectedType" :options="optionsType" label="Type" layout="vertical"
+        :errors="errors?.type" />
+      <base-select required v-model="selectedOwner" :options="owners?.data" label="Owner" layout="vertical"
+        :errors="errors?.owner" />
+      <base-select required v-model="selectedVault" :options="vaults?.data" label="Vault" layout="vertical"
+        :errors="errors?.vault" />
+      <base-select v-if="selectedVault" required v-model="selectedRack" :options="optionsRack" label="Rack"
+        layout="vertical" :errors="errors?.rack" />
       <base-datepicker label="Issued Date" v-model="issued_date" />
       <base-datepicker label="Expired Date" v-model="expired_date" />
       <base-textarea label="Notes" v-model="notes" minHeight="120" />
@@ -188,44 +163,27 @@ const previewImage = (i: number, event: Event) => {
   <base-card>
     <template #header>Document Files</template>
     <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-      <base-file-upload
-        v-for="(i, index) in imageUrl.length + 1"
-        :key="i"
-        @change="onUploadFile(index, $event)"
-        border="none"
-        accept="application/pdf, image/*"
-        class="bg-slate-200 col-span-1"
-      >
+      <base-file-upload v-for="(i, index) in imageUrl.length + 1" :key="i" @change="onUploadFile(index, $event)"
+        border="none" accept="application/pdf, image/*" class="bg-slate-200 col-span-1">
         <template v-slot="{ fileRef }">
           <div class="relative w-full">
             <base-button size="sm" @click="fileRef.click()" class="w-full">
               <div
-                class="text-sm font-semibold text-gray-500 flex-1 h-60 flex flex-col items-center justify-center w-full bg-slate-200"
-              >
-                <img
-                  v-if="imageUrl[index] && document_files[index].type.includes('image')"
-                  :src="imageUrl[index]"
-                  class="max-w-48 max-h-60 w-full"
-                />
+                class="text-sm font-semibold text-gray-500 flex-1 h-60 flex flex-col items-center justify-center w-full bg-slate-200">
+                <img v-if="imageUrl[index] && document_files[index].type.includes('image')" :src="imageUrl[index]"
+                  class="max-w-48 max-h-60 w-full" />
                 <div v-if="imageUrl[index] && document_files[index].type.includes('pdf')">
-                  <base-icon icon="i-fas-file-pdf" class="w-100px h-100px" />
+                  <base-icon icon="i-fa7-solid:file-pdf" class="w-100px h-100px" />
                 </div>
-                <div
-                  v-if="!imageUrl[index]"
-                  class="flex flex-col gap-2 items-center justify-center w-full h-full"
-                >
-                  <base-icon icon="i-fad-file-import" class="w-12 h-12"></base-icon>
+                <div v-if="!imageUrl[index]" class="flex flex-col gap-2 items-center justify-center w-full h-full">
+                  <base-icon icon="i-fa7-duotone:file-import" class="w-12 h-12"></base-icon>
                   <div>Choose File</div>
                 </div>
               </div>
             </base-button>
-            <base-button
-              v-if="index !== imageUrl.length"
-              type="button"
-              size="xs"
+            <base-button v-if="index !== imageUrl.length" type="button" size="xs"
               class="absolute right-2 top-2 rounded-full border-white bg-white px-2.5 py-1 opacity-50 shadow"
-              @click="onRemoveFile(index)"
-            >
+              @click="onRemoveFile(index)">
               X
             </base-button>
           </div>

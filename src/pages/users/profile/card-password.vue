@@ -67,7 +67,7 @@ const onUpdate = async () => {
       >
         <template #suffix>
           <BaseButton @click="passwordStore.toggle" variant="text" color="secondary">
-            <BaseIcon icon="i-far-eye" />
+            <BaseIcon icon="i-fa7-regular:eye" />
           </BaseButton>
         </template>
       </base-input>
@@ -81,7 +81,7 @@ const onUpdate = async () => {
       >
         <template #suffix>
           <BaseButton @click="passwordStore.toggle" variant="text" color="secondary">
-            <BaseIcon icon="i-far-eye" />
+            <BaseIcon icon="i-fa7-regular:eye" />
           </BaseButton>
         </template>
       </base-input>

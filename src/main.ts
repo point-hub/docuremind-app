@@ -12,8 +12,8 @@ import router from './router'
 
 const app = createApp(MainApp)
 
-app.use(router)
 app.use(createPinia())
+app.use(router)
 
 app.use(PluginInputMask)
 app.use(PluginTooltip)

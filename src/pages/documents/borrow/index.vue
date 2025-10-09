@@ -76,7 +76,7 @@ const onBorrow = async () => {
         <base-button color="primary" @click="onBorrow()" :disabled="isSaving">
           <template v-if="!isSaving">Borrow</template>
           <template v-else>
-            Updating <base-icon icon="i-fas-spinner" class="h-4 w-4 animate-spin" />
+            Updating <base-icon icon="i-fa7-solid:spinner" class="h-4 w-4 animate-spin" />
           </template>
         </base-button>
       </div>

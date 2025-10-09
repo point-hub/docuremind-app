@@ -178,7 +178,7 @@ const onDelete = async () => {
                             color="info"
                             class="w-full py-1! px-3! m-0! flex items-center justify-start text-left!"
                           >
-                            <base-icon class="flex-0" icon="i-fad-file"></base-icon>
+                            <base-icon class="flex-0" icon="i-fa7-duotone:file"></base-icon>
                             <p class="flex-1">View</p>
                           </base-button>
                         </router-link>
@@ -189,7 +189,7 @@ const onDelete = async () => {
                           class="w-full py-1! px-3! m-0! flex items-center justify-start text-left!"
                           @click="onDeleteModal(vault, index)"
                         >
-                          <base-icon class="flex-0" icon="i-fad-trash"></base-icon>
+                          <base-icon class="flex-0" icon="i-fa7-duotone:trash"></base-icon>
                           <p class="flex-1">Delete</p>
                         </base-button>
                       </div>

@@ -42,21 +42,9 @@ watch(
     <div class="flex flex-col gap-4 mt-5">
       <base-input required v-model="username" label="Username" :errors="errors?.username" />
       <base-input required v-model="email" label="Email" :errors="errors?.email" />
-      <base-input
-        required
-        v-model="password"
-        label="Password"
-        type="password"
-        :errors="errors?.password"
-      />
+      <base-input required v-model="password" label="Password" type="password" :errors="errors?.password" />
       <base-input required v-model="name" label="Name" :errors="errors?.name" />
-      <base-autocomplete
-        label="Role"
-        required
-        v-model="roleSelected"
-        :options="roleOptions"
-        :errors="errors?.role"
-      />
+      <base-select label="Role" required v-model="roleSelected" :options="roleOptions" :errors="errors?.role" />
     </div>
   </base-card>
 </template>

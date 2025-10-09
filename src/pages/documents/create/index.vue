@@ -79,7 +79,7 @@ const onSave = async () => {
         <base-button color="primary" @click="onSave()" :disabled="isSaving">
           <template v-if="!isSaving">Save</template>
           <template v-else>
-            Saving <base-icon icon="i-fas-spinner" class="h-4 w-4 animate-spin" />
+            Saving <base-icon icon="i-fa7-solid:spinner" class="h-4 w-4 animate-spin" />
           </template>
         </base-button>
       </div>

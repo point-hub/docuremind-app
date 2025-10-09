@@ -29,8 +29,8 @@ const onSignout = async () => {
           @click="sidebarStore.toggleSidebar()"
           id="sidebar-toggle-button"
         >
-          <i v-if="!sidebarStore.isSidebarOpen" class="block w-6 h-6 i-far-bars"></i>
-          <i v-else class="block w-6 h-6 i-far-xmark"></i>
+          <i v-if="!sidebarStore.isSidebarOpen" class="block w-6 h-6 i-fa7-regular:bars"></i>
+          <i v-else class="block w-6 h-6 i-fa7-regular:xmark"></i>
         </a>
         <div></div>
       </div>

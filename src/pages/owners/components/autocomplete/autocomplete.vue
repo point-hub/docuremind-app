@@ -70,13 +70,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <base-autocomplete
-    :required="required"
-    :label="label"
-    v-model="selected"
-    v-model:query="search"
-    :is-loading="isLoading"
-    :options="options"
-    :errors="errors"
-  />
+  <base-select :required="required" :label="label" v-model="selected" v-model:query="search" :is-loading="isLoading"
+    :options="options" :errors="errors" />
 </template>

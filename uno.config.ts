@@ -1,10 +1,10 @@
-import presetPappIcon from '@point-hub/preset-papp-icon'
+import { presetPappIcon } from '@point-hub/preset-papp-icon'
 import TransformerDirectives from '@unocss/transformer-directives'
-import { defineConfig, presetUno, presetWebFonts } from 'unocss'
+import { defineConfig, presetWebFonts, presetWind3 } from 'unocss'
 
 export default defineConfig({
   presets: [
-    presetUno({ mode: 'vue-scoped' }),
+    presetWind3({ mode: 'vue-scoped' }),
     presetPappIcon(),
     presetWebFonts({
       provider: 'google',

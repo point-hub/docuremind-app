@@ -75,7 +75,7 @@ const onSubmit = async () => {
           >
             <template #suffix>
               <BaseButton @click="password.toggle" variant="text" color="secondary">
-                <BaseIcon icon="i-far-eye" />
+                <BaseIcon icon="i-fa7-regular:eye" />
               </BaseButton>
             </template>
           </base-input>

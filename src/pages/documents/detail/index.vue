@@ -20,6 +20,7 @@ const form = reactive(useForm())
 const formId = ref()
 
 onMounted(async () => {
+  if (route.params.id == null) return
   const response = await getDocumentApi.send(route.params.id.toString())
 
   if (response) {
@@ -35,27 +36,12 @@ onMounted(async () => {
 
     <card-action :data="form.data" v-if="authStore.role === 'admin'" />
 
-    <card-form
-      :form-id="route.params.id.toString()"
-      :cover_url="form.data.cover_url"
-      :document_files="form.data.document_files"
-      :code="form.data.code"
-      :name="form.data.name"
-      :type="form.data.type"
-      :owner="form.data.owner?.label"
-      :vault="form.data.vault?.label"
-      :rack="form.data.rack?.label"
-      :issued_date="form.data.issued_date"
-      :expired_date="form.data.expired_date"
-      :notes="form.data.notes"
-      :status="form.data.status"
-    />
+    <card-form :cover_url="form.data.cover_url" :document_files="form.data.document_files" :code="form.data.code"
+      :name="form.data.name" :type="form.data.type" :owner="form.data.owner?.label" :vault="form.data.vault?.label"
+      :rack="form.data.rack?.label" :issued_date="form.data.issued_date" :expired_date="form.data.expired_date"
+      :notes="form.data.notes" :status="form.data.status" />
 
-    <card-meta
-      :created_at="form.data.created_at"
-      :created_by="form.data.created_by"
-      :updated_at="form.data.updated_at"
-      :updated_by="form.data.updated_by"
-    />
+    <card-meta :created_at="form.data.created_at" :created_by="form.data.created_by" :updated_at="form.data.updated_at"
+      :updated_by="form.data.updated_by" />
   </div>
 </template>

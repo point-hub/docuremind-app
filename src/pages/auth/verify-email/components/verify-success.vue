@@ -8,7 +8,7 @@ const props = defineProps<{
   <base-card class="max-w-xl">
     <div class="flex flex-col gap-6">
       <div>
-        <base-icon icon="i-fal-envelope-circle-check" class="text-[48px] mb-2" />
+        <base-icon icon="i-fa7-light:envelope-circle-check" class="text-[48px] mb-2" />
         <h1>Your Email Has Been Verified!</h1>
       </div>
       <div>

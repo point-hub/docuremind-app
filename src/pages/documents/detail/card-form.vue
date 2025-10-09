@@ -37,32 +37,19 @@ const status = defineModel<string>('status')
 
   <base-card>
     <template #header>Document Files</template>
-
     <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-      <div
-        border="none"
-        class="bg-slate-200 col-span-1"
-        v-for="(documentFile, index) in document_files"
-        :key="index"
-      >
+      <div border="none" class="bg-slate-200 col-span-1" v-for="(documentFile, index) in document_files" :key="index">
         <div class="relative w-full">
           <base-button size="sm" class="w-full">
             <div
-              class="text-sm font-semibold text-gray-500 flex-1 h-60 flex flex-col items-center justify-center w-full bg-slate-200"
-            >
-              <a
-                v-if="documentFile.url && documentFile.mime?.includes('image')"
-                :href="documentFile.url"
-                target="_blank"
-              >
+              class="text-sm font-semibold text-gray-500 flex-1 h-60 flex flex-col items-center justify-center w-full bg-slate-200">
+              <a v-if="documentFile.url && documentFile.mime?.includes('image')" :href="documentFile.url"
+                target="_blank">
                 <img :src="documentFile.url" class="max-w-48 max-h-60 w-full" />
               </a>
-              <a
-                v-else-if="documentFile.url && documentFile.mime?.includes('pdf')"
-                :href="documentFile.url"
-                target="_blank"
-              >
-                <base-icon icon="i-fas-file-pdf" class="w-100px h-100px" />
+              <a v-else-if="documentFile.url && documentFile.mime?.includes('pdf')" :href="documentFile.url"
+                target="_blank">
+                <base-icon icon="i-fa7-solid:file-pdf" class="w-100px h-100px" />
               </a>
             </div>
           </base-button>

@@ -79,7 +79,7 @@ const onSubmit = async () => {
         >
           <template #suffix>
             <BaseButton @click="toggleRevealPassword" variant="text" color="secondary">
-              <BaseIcon icon="i-far-eye" />
+              <BaseIcon icon="i-fa7-regular:eye" />
             </BaseButton>
           </template>
         </component>
@@ -93,7 +93,7 @@ const onSubmit = async () => {
         >
           <template #suffix>
             <BaseButton @click="toggleRevealPassword" variant="text" color="secondary">
-              <BaseIcon icon="i-far-eye" />
+              <BaseIcon icon="i-fa7-regular:eye" />
             </BaseButton>
           </template>
         </component>
