@@ -18,6 +18,7 @@ const owner = defineModel<IOption>('owner')
 const vault = defineModel<IOption>('vault')
 const rack = defineModel<IOption>('rack')
 const issued_date = defineModel<string>('issued_date')
+const due_date_reminder = defineModel<string>('due_date_reminder')
 const expired_date = defineModel<string>('expired_date')
 const notes = defineModel<string>('notes')
 const errors = defineModel<IFormError>('errors')
@@ -179,6 +180,7 @@ const previewImage = (i: number, event: Event) => {
       <base-select required v-model="selectedVault" :options="vaults?.data" label="Vault" />
       <base-select v-if="selectedVault" required v-model="selectedRack" :options="optionsRack" label="Rack" />
       <base-datepicker label="Issued Date" v-model="issued_date" />
+      <base-datepicker label="Due Date Reminder" v-model="due_date_reminder" />
       <base-datepicker label="Expired Date" v-model="expired_date" />
       <base-textarea label="Notes" v-model="notes" minHeight="120" />
     </div>
