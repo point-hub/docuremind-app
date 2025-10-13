@@ -52,21 +52,30 @@ onMounted(() => {
     <app-header></app-header>
 
     <!-- Sidebar -->
-    <component
-      :is="AppSidebar"
-      :title="choosenTitle"
-      :apps="appMenu.menus"
-      :menus="appMenu.menus[choosenAppIndex].menu ?? []"
-      :is-sidebar-open="sidebarStore.isSidebarOpen"
-      :is-mobile="mobileBreakpoint.isMobile()"
-      @choose="onChooseApp"
-    />
+    <component :is="AppSidebar" :title="choosenTitle" :apps="appMenu.menus"
+      :menus="appMenu.menus[choosenAppIndex].menu ?? []" :is-sidebar-open="sidebarStore.isSidebarOpen"
+      :is-mobile="mobileBreakpoint.isMobile()" @choose="onChooseApp" />
 
     <!-- Main Container -->
     <div class="main-container">
       <!-- Main Content -->
       <main class="main-content">
         <router-view></router-view>
+
+        <a href="https://wa.me/+628113399578" target="_blank" rel="noopener noreferrer" class=" fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[60] inline-flex items-center justify-center
+          rounded-full p-3 shadow-lg text-white" :class="[
+            'bg-[#25D366]',            /* WhatsApp green */
+            'hover:scale-105',         /* subtle hover pop */
+            'active:scale-95',
+            'transition-transform duration-150',
+            'ring-2 ring-white/30'
+          ]">
+          <!-- Icon (SVG) -->
+          <BaseIcon icon="i-ph-whatsapp-logo-duotone" class="text-2xl" />
+
+          <!-- Optional text for larger screens -->
+          <span class="hidden md:inline-block ml-2 text-sm font-medium select-none">Contact Us</span>
+        </a>
       </main>
 
       <!-- Footer -->

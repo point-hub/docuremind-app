@@ -38,8 +38,9 @@ onMounted(async () => {
 
     <card-form :cover_url="form.data.cover_url" :document_files="form.data.document_files" :code="form.data.code"
       :name="form.data.name" :type="form.data.type" :owner="form.data.owner?.label" :vault="form.data.vault?.label"
-      :rack="form.data.rack?.label" :issued_date="form.data.issued_date" :expired_date="form.data.expired_date"
-      :notes="form.data.notes" :status="form.data.status" />
+      :rack="form.data.rack?.label" v-model:due_date_reminder="form.data.due_date_reminder"
+      :issued_date="form.data.issued_date" :expired_date="form.data.expired_date" :notes="form.data.notes"
+      :status="form.data.status" />
 
     <card-meta :created_at="form.data.created_at" :created_by="form.data.created_by" :updated_at="form.data.updated_at"
       :updated_by="form.data.updated_by" />

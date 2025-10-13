@@ -15,6 +15,7 @@ const owner = defineModel<IOption>('owner')
 const vault = defineModel<IOption>('vault')
 const rack = defineModel<IOption>('rack')
 const issued_date = defineModel<string>('issued_date')
+const due_date_reminder = defineModel<string>('due_date_reminder')
 const expired_date = defineModel<string>('expired_date')
 const notes = defineModel<string>('notes')
 const errors = defineModel<IFormError>('errors')
@@ -147,15 +148,13 @@ const previewImage = (i: number, event: Event) => {
       <base-file-upload label="Cover" @change="onUpload" accept="image/*" :errors="errors?.cover" />
       <base-input required v-model="code" label="Code" :errors="errors?.code" />
       <base-input required v-model="name" label="Name" :errors="errors?.name" />
-      <base-select required v-model="selectedType" :options="optionsType" label="Type" layout="vertical"
-        :errors="errors?.type" />
-      <base-select required v-model="selectedOwner" :options="owners?.data" label="Owner" layout="vertical"
-        :errors="errors?.owner" />
-      <base-select required v-model="selectedVault" :options="vaults?.data" label="Vault" layout="vertical"
-        :errors="errors?.vault" />
+      <base-select required v-model="selectedType" :options="optionsType" label="Type" :errors="errors?.type" />
+      <base-select required v-model="selectedOwner" :options="owners?.data" label="Owner" :errors="errors?.owner" />
+      <base-select required v-model="selectedVault" :options="vaults?.data" label="Vault" :errors="errors?.vault" />
       <base-select v-if="selectedVault" required v-model="selectedRack" :options="optionsRack" label="Rack"
-        layout="vertical" :errors="errors?.rack" />
+        :errors="errors?.rack" />
       <base-datepicker label="Issued Date" v-model="issued_date" />
+      <base-datepicker label="Due Date Reminder" v-model="due_date_reminder" />
       <base-datepicker label="Expired Date" v-model="expired_date" />
       <base-textarea label="Notes" v-model="notes" minHeight="120" />
     </div>
