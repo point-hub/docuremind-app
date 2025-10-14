@@ -152,7 +152,7 @@ const onDelete = async () => {
     <div class="my-5 flex gap-2">
       <base-input v-model="searchAll" placeholder="Search..." border="full" class="w-full" />
     </div>
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4 text-red">
       <base-table>
         <tbody>
           <tr v-if="isLoading">
@@ -177,10 +177,8 @@ const onDelete = async () => {
                 </template>
               </td>
               <td class="w-1">
-                <router-link
-                  :to="`/documents/${document._id}/edit`"
-                  class="text-white py-1 px-2 bg-blue-600 text-xs mr-2"
-                >
+                <router-link :to="`/documents/${document._id}/edit`"
+                  class="text-white py-1 px-2 bg-blue-600 text-xs mr-2">
                   Update
                 </router-link>
               </td>
@@ -188,13 +186,8 @@ const onDelete = async () => {
           </template>
         </tbody>
       </base-table>
-      <base-pagination
-        v-if="!isLoading"
-        v-model="pagination.page"
-        :page-size="pagination.page_size"
-        :total-document="pagination.total_document"
-        @update:model-value="onPageUpdate()"
-      />
+      <base-pagination v-if="!isLoading" v-model="pagination.page" :page-size="pagination.page_size"
+        :total-document="pagination.total_document" @update:model-value="onPageUpdate()" />
     </div>
     <delete-modal ref="deleteModalRef" @deleted="onDelete" />
   </base-card>
