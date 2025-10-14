@@ -16,6 +16,7 @@ export function useGetDocumentApi() {
         vault: response.data.vault,
         rack: response.data.rack,
         issued_date: response.data.issued_date,
+        due_date_reminder: response.data.due_date_reminder,
         expired_date: response.data.expired_date,
         status: response.data.status,
         notes: response.data.notes
