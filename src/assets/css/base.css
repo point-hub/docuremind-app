@@ -32,3 +32,7 @@ h3 {
 .table-container {
   @apply py-1;
 }
+
+table input {
+  @apply px-0!;
+}

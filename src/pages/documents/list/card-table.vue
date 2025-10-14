@@ -221,33 +221,25 @@ watch(
           <tr class="bg-slate-50 dark:bg-slate-700">
             <th></th>
             <th class="basic-table-head">
-              <base-input required v-model="search.code" placeholder="Search" border="none" />
+              <base-input v-model="search.code" placeholder="Search" border="none" />
             </th>
             <th class="basic-table-head">
-              <base-input required v-model="search.name" placeholder="Search" border="none" />
+              <base-input v-model="search.name" placeholder="Search" border="none" />
             </th>
             <th class="basic-table-head">
-              <base-input required v-model="search.owner" placeholder="Search" border="none" />
+              <base-input v-model="search.owner" placeholder="Search" border="none" />
             </th>
             <th class="basic-table-head">
-              <base-input required v-model="search.vault" placeholder="Search" border="none" />
+              <base-input v-model="search.vault" placeholder="Search" border="none" />
             </th>
             <th class="basic-table-head">
-              <base-input required v-model="search.rack" placeholder="Search" border="none" />
+              <base-input v-model="search.rack" placeholder="Search" border="none" />
             </th>
             <th class="basic-table-head">
-              <expired-choosen
-                v-model:selected="selectedExpiredDate"
-                border="none"
-                placeholder="Search"
-              />
+              <expired-choosen v-model:selected="selectedExpiredDate" border="none" placeholder="Search" />
             </th>
             <th class="basic-table-head">
-              <status-choosen
-                v-model:selected="selectedStatus"
-                border="none"
-                placeholder="Search"
-              />
+              <status-choosen v-model:selected="selectedStatus" border="none" placeholder="Search" />
             </th>
             <th class="basic-table-head"></th>
           </tr>
@@ -271,23 +263,16 @@ watch(
                     <base-card class="p-0! gap-0!">
                       <div class="flex flex-col">
                         <router-link :to="`/documents/${document._id}`">
-                          <base-button
-                            variant="text"
-                            color="info"
-                            class="w-full py-1! px-3! m-0! flex items-center justify-start text-left!"
-                          >
+                          <base-button variant="text" color="info"
+                            class="w-full py-1! px-3! m-0! flex items-center justify-start text-left!">
                             <base-icon class="flex-0" icon="i-fa7-duotone:file"></base-icon>
                             <p class="flex-1">View</p>
                           </base-button>
                         </router-link>
                         <base-divider orientation="vertical" class="my-0!" />
-                        <base-button
-                          v-if="authStore.role === 'admin'"
-                          variant="text"
-                          color="danger"
+                        <base-button v-if="authStore.role === 'admin'" variant="text" color="danger"
                           class="w-full py-1! px-3! m-0! flex items-center justify-start text-left!"
-                          @click="onDeleteModal(document, index)"
-                        >
+                          @click="onDeleteModal(document, index)">
                           <base-icon class="flex-0" icon="i-fa7-duotone:trash"></base-icon>
                           <p class="flex-1">Delete</p>
                         </base-button>
@@ -323,13 +308,8 @@ watch(
           </template>
         </tbody>
       </base-table>
-      <base-pagination
-        v-if="!isLoading"
-        v-model="pagination.page"
-        :page-size="pagination.page_size"
-        :total-document="pagination.total_document"
-        @update:model-value="onPageUpdate()"
-      />
+      <base-pagination v-if="!isLoading" v-model="pagination.page" :page-size="pagination.page_size"
+        :total-document="pagination.total_document" @update:model-value="onPageUpdate()" />
     </div>
     <delete-modal ref="deleteModalRef" @deleted="onDelete" />
   </base-card>
