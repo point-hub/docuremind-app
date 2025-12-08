@@ -32,6 +32,7 @@ const seedMenu = () => {
 
   if (authStore?.role === 'admin') {
     menu.value.push({ name: 'Users', path: '/users' })
+    menu.value.push({ name: 'User Activities', path: '/user-activities' })
     menu.value.push({ name: 'Vaults', path: '/vaults' })
     menu.value.push({ name: 'Owners', path: '/owners' })
   }

@@ -4,6 +4,7 @@ import axios from '@/axios'
 import authRoutes from '@/pages/auth/routes'
 import documentRoutes from '@/pages/documents/routes'
 import ownerRoutes from '@/pages/owners/routes'
+import userActivityRoutes from '@/pages/user-activities/routes'
 import userRoutes from '@/pages/users/routes'
 import vaultRoutes from '@/pages/vaults/routes'
 import { useAuthStore } from '@/stores/auth.store'
@@ -23,6 +24,7 @@ const router = createRouter({
         },
         vaultRoutes,
         userRoutes,
+        userActivityRoutes,
         documentRoutes,
         ownerRoutes
       ]

@@ -146,7 +146,7 @@ onMounted(async () => {
 const toastRef = inject<Ref<IToastRef>>('toastRef')
 const onReturn = async (document: IDocument) => {
   try {
-    const res = await returnDocumentApi.send(document.borrow._id)
+    const res = await returnDocumentApi.send(document.borrow._id, document._id)
     if (res?.modified_count === 1) {
       toastRef?.value.toast(
         `Pengembalian dokumen "[${document.code}] ${document.name}" telah di proses`,
@@ -206,74 +206,42 @@ const onReturn = async (document: IDocument) => {
                     oleh <b>{{ document.borrow.requested_by.label }}</b> untuk
                     <b>{{ document.borrow.reason_for_borrowing }}</b>
                   </p>
-                  <span
-                    v-if="
-                      document.borrow.return_due_date < new Date().toISOString() &&
-                      document.borrow.status === 'approved'
-                    "
-                  >
-                    <span class="bg-red-500 text-white px-1"
-                      >Overdue: {{ document.borrow.return_due_date }}</span
-                    >
+                  <span v-if="
+                    document.borrow.return_due_date < new Date().toISOString() &&
+                    document.borrow.status === 'approved'
+                  ">
+                    <span class="bg-red-500 text-white px-1">Overdue: {{ document.borrow.return_due_date }}</span>
                   </span>
                 </template>
               </td>
               <td class="w-1">
                 <div class="flex gap-2">
-                  <base-button
-                    v-if="
-                      document.borrow.requested_by._id === authStore._id &&
-                      document.borrow.status === 'approved'
-                    "
-                    size="xs"
-                    variant="filled"
-                    color="primary"
-                    @click="onReturn(document)"
-                  >
+                  <base-button v-if="
+                    document.borrow.requested_by._id === authStore._id &&
+                    document.borrow.status === 'approved'
+                  " size="xs" variant="filled" color="primary" @click="onReturn(document)">
                     Return
                   </base-button>
                 </div>
               </td>
               <td class="w-1">
-                <base-badge
-                  v-if="document.borrow.status === 'returning'"
-                  variant="light"
-                  color="warning"
-                  >Returning</base-badge
-                >
-                <base-badge
-                  v-if="document.borrow.status === 'returned'"
-                  variant="light"
-                  color="success"
-                  >Returned</base-badge
-                >
-                <base-badge v-if="document.borrow.status === 'pending'" variant="light" color="info"
-                  >Pending</base-badge
-                >
-                <base-badge
-                  v-if="document.borrow.status === 'approved'"
-                  variant="light"
-                  color="success"
-                  >Approved</base-badge
-                >
-                <base-badge
-                  v-if="document.borrow.status === 'rejected'"
-                  variant="light"
-                  color="danger"
-                  >Rejected</base-badge
-                >
+                <base-badge v-if="document.borrow.status === 'returning'" variant="light"
+                  color="warning">Returning</base-badge>
+                <base-badge v-if="document.borrow.status === 'returned'" variant="light"
+                  color="success">Returned</base-badge>
+                <base-badge v-if="document.borrow.status === 'pending'" variant="light"
+                  color="info">Pending</base-badge>
+                <base-badge v-if="document.borrow.status === 'approved'" variant="light"
+                  color="success">Approved</base-badge>
+                <base-badge v-if="document.borrow.status === 'rejected'" variant="light"
+                  color="danger">Rejected</base-badge>
               </td>
             </tr>
           </template>
         </tbody>
       </base-table>
-      <base-pagination
-        v-if="!isLoading"
-        v-model="pagination.page"
-        :page-size="pagination.page_size"
-        :total-document="pagination.total_document"
-        @update:model-value="onPageUpdate()"
-      />
+      <base-pagination v-if="!isLoading" v-model="pagination.page" :page-size="pagination.page_size"
+        :total-document="pagination.total_document" @update:model-value="onPageUpdate()" />
     </div>
   </base-card>
 </template>

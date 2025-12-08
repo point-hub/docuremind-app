@@ -1,10 +1,10 @@
 import axios from '@/axios'
 
-export function useReturnDocumentApi() {
-  const send = async (_id: string, document_id: string) => {
-    const response = await axios.post(`/v1/documents/${_id}/return`, {
-      document_id: document_id
-    })
+import type { IForm } from './form-password'
+
+export function useUpdatePasswordApi() {
+  const send = async (_id: string, data: IForm) => {
+    const response = await axios.post(`/v1/users/${_id}/update-password`, data)
     if (response.status === 200) {
       return {
         matched_count: response.data.matched_count,
