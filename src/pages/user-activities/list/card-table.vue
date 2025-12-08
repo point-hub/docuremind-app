@@ -132,7 +132,7 @@ watch(
   async () => {
     searchAll.value = route.query.search?.toString() ?? ''
     search.value.name = route.query['search.name']?.toString() ?? ''
-    pagination.value.page = Number(route.query.page ?? 1)
+    pagination.value.page = 1
     // call api
     const response = await getActivitiesApi.send(
       {
