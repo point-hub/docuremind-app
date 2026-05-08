@@ -146,7 +146,7 @@ onMounted(async () => {
 const toastRef = inject<Ref<IToastRef>>('toastRef')
 const onReturn = async (document: IDocument) => {
   try {
-    const res = await returnDocumentApi.send(document.borrow._id, document._id)
+    const res = await returnDocumentApi.send(document._id, document._id)
     if (res?.modified_count === 1) {
       toastRef?.value.toast(
         `Pengembalian dokumen "[${document.code}] ${document.name}" telah di proses`,
