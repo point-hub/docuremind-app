@@ -22,6 +22,7 @@
     "@point-hub/vue-cookie": "^0.2.2",
     "axios": "^1.12.2",
     "pinia": "^3.0.3",
+    "vercel": "^52.0.0",
     "vue": "^3.5.22",
     "vue-router": "^4.5.1"
   },
