@@ -24,18 +24,21 @@ const onSignout = async () => {
     <div class="header-container">
       <!-- Left Header -->
       <div class="flex items-center gap-4">
-        <a
-          href="javascript:void(0)"
-          @click="sidebarStore.toggleSidebar()"
-          id="sidebar-toggle-button"
-        >
+        <a href="javascript:void(0)" @click="sidebarStore.toggleSidebar()" id="sidebar-toggle-button">
           <i v-if="!sidebarStore.isSidebarOpen" class="block w-6 h-6 i-fa7-regular:bars"></i>
           <i v-else class="block w-6 h-6 i-fa7-regular:xmark"></i>
         </a>
         <div></div>
       </div>
       <!-- Right Header -->
-      <div class="flex items-center">
+      <div class="flex items-center gap-4">
+        <div>
+          <a href="https://pointhub.gitbook.io/docuremind" target="_blank"
+            class="text-slate-900 dark:text-slate-50 flex justify-left!">
+            <BaseIcon v-if="isDarkMode" icon="i-ph-info" class="text-2xl" />
+            <BaseIcon v-else icon="i-ph-info" class="text-2xl" />
+          </a>
+        </div>
         <!-- User -->
         <base-popover ref="accountPopoverRef" placement="bottom-end">
           <button type="button" class="flex gap-2" @click="accountPopoverRef.toggle()">
@@ -43,12 +46,7 @@ const onSignout = async () => {
               <p class="text-sm truncate font-semibold">DocuRemind</p>
               <p class="text-sm truncate">{{ authStore.name }}</p>
             </div>
-            <base-avatar
-              size="xs"
-              src="https://placehold.co/150"
-              shape="squircle"
-              name="John Doe"
-            />
+            <base-avatar size="xs" src="https://placehold.co/150" shape="squircle" name="John Doe" />
           </button>
           <template #content>
             <div class="popper-root p-2">
@@ -73,34 +71,20 @@ const onSignout = async () => {
               <!-- <base-divider orientation="vertical" /> -->
 
               <router-link to="/users/profile" class="w-full" @click="accountPopoverRef.toggle()">
-                <base-button
-                  variant="text"
-                  color="primary"
-                  size="sm"
-                  class="text-slate-900 dark:text-slate-50 flex justify-left! w-full"
-                >
+                <base-button variant="text" color="primary" size="sm"
+                  class="text-slate-900 dark:text-slate-50 flex justify-left! w-full">
                   <BaseIcon icon="i-ph-user-duotone" class="text-2xl" />
                   <p>Acccount</p>
                 </base-button>
               </router-link>
-              <base-button
-                variant="text"
-                color="primary"
-                size="sm"
-                @click="toggleDarkMode()"
-                class="text-slate-900 dark:text-slate-50 flex justify-left!"
-              >
+              <base-button variant="text" color="primary" size="sm" @click="toggleDarkMode()"
+                class="text-slate-900 dark:text-slate-50 flex justify-left!">
                 <BaseIcon v-if="isDarkMode" icon="i-ph-sun-duotone" class="text-2xl" />
                 <BaseIcon v-else icon="i-ph-moon-duotone" class="text-2xl" />
                 <p>Dark Mode</p>
               </base-button>
-              <base-button
-                variant="text"
-                color="danger"
-                size="sm"
-                class="text-slate-900 dark:text-slate-50 flex justify-left!"
-                @click="onSignout()"
-              >
+              <base-button variant="text" color="danger" size="sm"
+                class="text-slate-900 dark:text-slate-50 flex justify-left!" @click="onSignout()">
                 <BaseIcon icon="i-ph-sign-out-duotone" class="text-2xl" />
                 <p>Sign Out</p>
               </base-button>
